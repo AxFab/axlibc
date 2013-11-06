@@ -2,5 +2,5 @@ axLibc
 ======
 
   Personnal implementation of the standard c library.
-  This implementation is minimalist. The purpose is to serve base code for my
-  peronnal kernel. 
+  This implementation is minimalist. The purpose is to provide basic functions
+  for my peronnal kernel. 
