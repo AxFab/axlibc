@@ -1,0 +1,16 @@
+
+# GIT - ignore
+
+# Strict rule for c project
+*
+!*/
+
+# Allow repository files
+!.gitignore
+!LICENSE
+!README
+!Makefile
+
+# Allow source files
+!*.c
+!*.h
