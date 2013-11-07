@@ -9,7 +9,10 @@
 !.gitignore
 !LICENSE
 !README
+
+# Allow makefiles
 !Makefile
+!*.mk
 
 # Allow source files
 !*.c
