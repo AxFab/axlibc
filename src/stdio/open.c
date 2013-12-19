@@ -1,5 +1,6 @@
-#include <stdio.h>
-
+#include <stdlib.h>
+#include <errno.h>
+#include <prv/stream.h>
 
 // ===========================================================================
 /**
@@ -13,48 +14,48 @@
  * @throw EBADF                     Invalid file descriptor
  * @throw EINVAL                    The flags are invalid
  */
-static FILE* _fdopen(int fd, int oflags, int rflags) 
+static FILE* _fvopen(int fd, int oflags, int rflags) 
 {
-  axStream_t* fp;
-  
+  FILE* fp;
+
   if (!fd) {
     __seterrno(EBADF);
     return NULL;
   }
-  
-  if (!rflags) {
-    rflags = _fcntl(fd, F_GETFL, 0);
-    if (rflags < 0) {
-      __seterrno(EINVAL);
-      return NULL;
-    }
-    
-    rflags |= O_ACCMODE;
-    
-    // Be sure that oflags are ok with rflags
+
+  if (oflags == 0) {
+    __seterrno(EINVAL);
+    return NULL;
   }
-  
-  /* Allocate file descriptor */
-  AX_ALLOC (fp, axStream_t);
+
+  fp = (FILE*)malloc (sizeof(FILE));
   if (!fp) {
     __seterrno(ENOMEM);
     return NULL;
   }
-  
-  fp->_file = fd;
-  fp->_flags = oflags;
-  fp->_read = _sread;
-  fp->_write = _swrite;
-  fp->_seek = _sseek;
-  fp->_close = _sclose;
-  fp->_flush = _sflush;
-  
+
+  if (mtx_init(&fp->_lock, MTX_RECURSIVE) != MTX_SUCESS) {
+    __seterrno(ENOLCK);
+    free(fp);
+    return NULL;
+  }
+
+  fp->_fd = fd;
+  fp->_oflags = oflags | _IOLBF;
+  fp->_cache = (uint8_t*)malloc (BUFSIZ);
+  fp->_bufsize = BUFSIZ;
+  fp->_position = 0;
+  fp->_bufidx = 0;
+  fp->_ungetidx = 0;
+  fp->_next = OFP_HEAD;
+  OFP_HEAD = fp;
+
   /* If O_APPEND is set, we need to set cursor at the end */
   if (oflags & O_APPEND) {
-    _sseek(fp, (fpos_t)0, SEEK_END);
+	fp->_position = lseek(fd, (fpos_t)0, SEEK_END);
   }
   
-  return (FILE*)fp;
+  return fp;
 }
 
 // ---------------------------------------------------------------------------
@@ -112,18 +113,18 @@ static int _foflags (const char* mode)
         return 0;
           
       case '+':
-        open_mode &= ~(O_RDONLY | O_WRONLY);
-        open_mode |= O_RDWR;
+        oflags &= ~(O_RDONLY | O_WRONLY);
+        oflags |= O_RDWR;
         break;
         
-      case 'b': open_mode |= O_BINARY; break;
+      case 'b': oflags |= O_BINARY; break;
 #ifdef __GNU
-      case 'x': open_mode |= O_EXCL; break;
-      case 'e': open_mode |= O_CLOEXEC; break;
-      case 'm': open_mode |= O_MEMORYMAP; break;
+      case 'x': oflags |= O_EXCL; break;
+      case 'e': oflags |= O_CLOEXEC; break;
+      case 'm': oflags |= O_MEMORYMAP; break;
 #endif
 #ifdef __EXT
-      case 'F': open_mode |= O_LARGEFILE; break;
+      case 'F': oflags |= O_LARGEFILE; break;
 #endif
     }
     ++mode;
@@ -147,20 +148,28 @@ static int _foflags (const char* mode)
  */
 FILE* fopen (const char* restrict file, const char* restrict mode)
 {
-  int fd, oflags;
+  int fd;
+  int oflags;
+  FILE* fp;
+
   /* Get openning flags */
   oflags = _foflags(mode);
-  if (!oflags) {
+  if (oflags == 0 || file == NULL) {
     return NULL;
   } 
   
   /* Open file get file ID */
-  fd = open(file, oflags, DEFFILEMODE);
+  fd = open(file, oflags, OF_RIGHTS);
   if (!fd) {
     return NULL;
   }
-    
-  return _fdopen(fp, oflags, oflags);
+  
+  fp = _fvopen(fd, oflags, oflags);
+  if (fp == NULL) {
+    close (fd);
+  }
+
+  return fp;
 }
 
 
@@ -171,27 +180,57 @@ FILE* fopen (const char* restrict file, const char* restrict mode)
 FILE* fdopen(int fd, const char* mode) 
 {
   int oflags;
+
   /* Get openning flags */
   oflags = _foflags(mode);
   if (!oflags) {
     return NULL;
   } 
   
-  return _fdopen(fd, oflags, 0);
+  return _fvopen(fd, oflags, 0);
 }
 
 // ---------------------------------------------------------------------------
 /**
  * Create a new stream base on another one
  */
-FILE *freopen(const char *restrict file, const char *restrict mode, FILE *restrict fp) 
+FILE *freopen(const char *restrict file, const char *restrict mode, FILE *restrict stream) 
 {
+  int oflags = stream->_oflags & ( _IONBF | _IOLBF | _IOFBF );
   if (file == NULL) {
     /* Change mode if incompatible */
   }
+
+  flockfile(stream);
+
+  /* flush buffers */
+  if (stream->_oflags &= (O_WRONLY | O_RDWR)) {
+    if (flush_cache (stream) == EOF) {
+      return EOF;
+    }
+  }
+
+  if (file == NULL || stream->_path == NULL) {
+    funlockfile (stream);
+    return NULL;
+  }
   
-  fclose (fp);
-  fopen()
+  close (stream->_fd);
+
+  /* Re-add the flags we saved above */
+  stream->_oflags |= status;
+  stream->_bufidx = 0;
+  stream->_bufend = 0;
+  stream->_ungetidx = 0;
+  
+  if ( ! open( &stream->_fd, stream->_oflags) )
+  {
+    funlockfile( stream );
+    return NULL;
+  }
+  
+  funlockfile( stream );
+  return stream;
 }
 
 
