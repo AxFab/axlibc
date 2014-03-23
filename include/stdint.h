@@ -1,45 +1,64 @@
 #ifndef STDINT_H_
 #define STDINT_H_
+#include <sys/version.h>
 /* ISO C99 Standard: 7.18 Integer types <stdint.h> */
-
-#include <__std.h>
 
 #if !(defined(__C99) || defined(__EX))
 #  error stdint is not available, use ISO C99 Standard. 
 #endif
 
-#if defined (__cplusplus) 
-extern "C" {
-#endif
-
 /* ----------------------------------------------------------------------- */
 
-/*
- *  ARCH		|	16-bits	|	32-bits	|	64-bits	|
- * char			|		8	|		8	|		8	|
- * short		|		8	|	   16	|	   16	|
- * int			|	   16	|	   32	|	   32	|
- * long			|	   32	|	   32	|	32/64	|
- * long long	|		X	|	   64	|	   64	|
+/*  ARCH      | 16 | 32 |    64 |
+ * -----------|----|----|-------|
+ * char       |  8 |  8 |     8 |
+ * short      |  8 | 16 |    16 |
+ * int        | 16 | 32 |    32 |
+ * long       | 32 | 32 | 32/64 |
+ * long long  |  X | 64 |    64 |
  */
 
-typedef signed char int8_t;					/*< 8-bit signed type. */
-typedef unsigned char uint8_t;				/*< 8-bit unsigned type. */
+typedef signed char int8_t;         /*< 8-bit signed type. */
+typedef unsigned char uint8_t;        /*< 8-bit unsigned type. */
 
-typedef signed short int16_t;				/*< 16-bit signed type. */
-typedef unsigned short uint16_t;			/*< 16-bit unsigned type. */
+#if __WORD == 16
 
-typedef signed int int32_t;					/*< 32-bit signed type. */
-typedef unsigned int uint32_t;				/*< 32-bit unsigned type. */
+typedef signed int int16_t;       /*< 16-bit signed type. */
+typedef unsigned int uint16_t;      /*< 16-bit unsigned type. */
 
-typedef signed long long int int64_t;		/*< 64-bit signed type. */
-typedef unsigned long long int uint64_t;	/*< 64-bit unsigned type. */
+typedef signed long int32_t;         /*< 32-bit signed type. */
+typedef unsigned long uint32_t;        /*< 32-bit unsigned type. */
+
+#elif __WORD == 32 || __WORD == 64
+
+typedef signed short int16_t;       /*< 16-bit signed type. */
+typedef unsigned short uint16_t;      /*< 16-bit unsigned type. */
+
+typedef signed int int32_t;         /*< 32-bit signed type. */
+typedef unsigned int uint32_t;        /*< 32-bit unsigned type. */
+
+typedef signed long long int int64_t;   /*< 64-bit signed type. */
+typedef unsigned long long int uint64_t;  /*< 64-bit unsigned type. */
+
+#endif
 
 
-typedef int32_t intptr_t;					/* Signed pointer compatible type. */
-typedef uint32_t uintptr_t;					/* Unsigned pointer compatible type. */
-//typedef int64_t intptr_t;
+#if __WORD == 16
 
+typedef int16_t intptr_t;         /* Signed pointer compatible type. */
+typedef uint16_t uintptr_t;         /* Unsigned pointer compatible type. */
+
+#elif __WORD == 32
+
+typedef int32_t intptr_t;         /* Signed pointer compatible type. */
+typedef uint32_t uintptr_t;         /* Unsigned pointer compatible type. */
+
+#elif __WORD == 64
+
+typedef int64_t intptr_t;         /* Signed pointer compatible type. */
+typedef uint64_t uintptr_t;         /* Unsigned pointer compatible type. */
+
+#endif
 
 
 typedef int8_t   int_least8_t;
@@ -56,17 +75,17 @@ typedef uint64_t uint_least64_t;
 
 
 
-typedef int8_t int_fast8_t;
-typedef uint8_t uint_fast8_t;
+typedef signed char int_fast8_t;
+typedef unsigned char uint_fast8_t;
 
-typedef int32_t int_fast16_t;
-typedef uint32_t uint_fast16_t;
+typedef signed int int_fast16_t;
+typedef unsigned int uint_fast16_t;
 
-typedef int32_t int_fast32_t;
-typedef uint32_t uint_fast32_t;
+typedef signed long int_fast32_t;
+typedef signed long uint_fast32_t;
 
-typedef int64_t int_fast64_t;
-typedef uint64_t uint_fast64_t;
+typedef signed long long int_fast64_t;
+typedef signed long long uint_fast64_t;
 
 
 
@@ -149,8 +168,5 @@ typedef uint64_t uintmax_t;
 
 /* ----------------------------------------------------------------------- */
 
-#if defined (__cplusplus) 
-}
-#endif
 
 #endif /* STDINT_H_ */

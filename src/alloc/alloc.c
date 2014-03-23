@@ -1,13 +1,14 @@
-#include "alloc.h"
+#include <prv/alloc.h>
+#include <stdint.h>
 
 int bpw2 (unsigned long );
 
 /*
  * @brief Append a memory block on the list of free blocks
  */
-static void alloc_add_to_free (HEAP_info* heap, HEAP_chunk* chunk) 
+static void alloc_add_to_free (xHeapArea_t* heap, xHeapChunk_t* chunk) 
 {
-    HEAP_chunk* curs = heap->free_list;
+    xHeapChunk_t* curs = heap->free_list;
     chunk->is_used &= ~ALLOC_ISUSED;
 
     // In case there is no available blocks
@@ -48,7 +49,7 @@ static void alloc_add_to_free (HEAP_info* heap, HEAP_chunk* chunk)
 /*
  * @brief Remove a memory block of the list of free blocks
  */
-static void alloc_rem_of_free (HEAP_info* heap, HEAP_chunk* chunk) 
+static void alloc_rem_of_free (xHeapArea_t* heap, xHeapChunk_t* chunk) 
 {
     if ( chunk->next_chunk ) {
         chunk->next_chunk->prev_chunk = chunk->prev_chunk;
@@ -60,17 +61,19 @@ static void alloc_rem_of_free (HEAP_info* heap, HEAP_chunk* chunk)
         heap->free_list = chunk->next_chunk;
     }
 
-    chunk->prev_chunk = (HEAP_chunk*)0xcccccccc;
-    chunk->next_chunk = (HEAP_chunk*)0xcccccccc;
+    chunk->prev_chunk = (xHeapChunk_t*)0xcccccccc;
+    chunk->next_chunk = (xHeapChunk_t*)0xcccccccc;
     chunk->is_used |= ALLOC_ISUSED;
 }
 
 /**
  * @brief Initialize a heap segment structure info
  */
-void meminit_r(HEAP_info* heap, void* base, size_t length) 
+void meminit_r(xHeapArea_t* heap, void* base, size_t length) 
 {
-    heap->start = ( HEAP_chunk* ) ALIGN ( base, ALLOC_MIN_CHUNK );
+    kprintf ("HEAP WILL BE WATCH\n");
+    heap->flags |= ALLOC_PARANOID;
+    heap->start = ( xHeapChunk_t* ) ALIGN ( (uintptr_t)base, ALLOC_MIN_CHUNK );
     heap->free_list = NULL;
     heap->available = (size_t)heap->start - (size_t)base;
     heap->available = length - heap->available;
@@ -78,7 +81,7 @@ void meminit_r(HEAP_info* heap, void* base, size_t length)
     heap->max = (size_t)heap->start + heap->available;
     heap->start->prev_size = 0;
     heap->start->chunk_size = heap->available;
-    heap->flags = ALLOC_CHECK;
+    heap->flags |= ALLOC_CHECK;
     heap->lock = 0;
     alloc_add_to_free (heap, heap->start);
 }
@@ -104,15 +107,21 @@ void meminit_r(HEAP_info* heap, void* base, size_t length)
  * guarantee that the memory really is available. In case it turns out that 
  * the system is out of memory, one or more processes will be killed. 
  */
-void* malloc_r(HEAP_info* heap, size_t size)
+void* malloc_r(xHeapArea_t* heap, size_t size)
 {
-    HEAP_chunk* chunk = heap->free_list;
-    HEAP_chunk* split = NULL;
-    HEAP_chunk* prev = NULL;
-    HEAP_chunk* next = NULL;
+    xHeapChunk_t* chunk = heap->free_list;
+    xHeapChunk_t* split = NULL;
+    xHeapChunk_t* prev = NULL;
+    xHeapChunk_t* next = NULL;
     size_t lsize = 0;
     
     _LOCK(heap);
+
+    if (heap->flags & ALLOC_PARANOID) {
+        if (memcorrupt_r(heap)) {
+            kprintf ("HEAP IS CORRUPTED #1\n");
+        }
+    }
 
     // We align the length requested 
     if (size > ALLOC_MAX_CHUNK - ALLOC_MIN_CHUNK) {
@@ -147,10 +156,10 @@ void* malloc_r(HEAP_info* heap, size_t size)
             alloc_rem_of_free ( heap, chunk );
             if (chunk->chunk_size >= size + ALLOC_MIN_CHUNK ) {
                 // If the size is enough for a new block
-                split = ( HEAP_chunk* ) ((( size_t ) chunk ) + size);
+                split = ( xHeapChunk_t* ) ((( size_t ) chunk ) + size);
                 split->chunk_size = chunk->chunk_size - size;
                 split->prev_size = size;
-                next =  (HEAP_chunk*)((size_t)split + (size_t)split->chunk_size);
+                next =  (xHeapChunk_t*)((size_t)split + (size_t)split->chunk_size);
                 if ((size_t)next < heap->max)
                     next->prev_size = split->chunk_size;
                 else if ((heap->flags & ALLOC_CHECK) && (size_t)next != heap->max) {
@@ -165,6 +174,14 @@ void* malloc_r(HEAP_info* heap, size_t size)
 
             heap->available -= size;
             _UNLOCK(heap);
+
+            if (heap->flags & ALLOC_PARANOID) {
+                if (memcorrupt_r(heap)) {
+                    kprintf ("HEAP IS CORRUPTED #2\n");
+                }
+            }
+
+            kprintf ("MALLOc RETURN 0x%x or 0x%x\n", chunk->data, &chunk->prev_chunk);
             return (chunk->data);
         }
 
@@ -173,6 +190,13 @@ void* malloc_r(HEAP_info* heap, size_t size)
     
     _UNLOCK(heap);
     // TODO errno = ENOMEM;
+
+    if (heap->flags & ALLOC_PARANOID) {
+        if (memcorrupt_r(heap)) {
+            kprintf ("HEAP IS CORRUPTED #3\n");
+        }
+    }
+
     return NULL;
 }
 
@@ -189,19 +213,26 @@ void* malloc_r(HEAP_info* heap, size_t size)
  * @see brk, mmap, alloca, malloc_get_state, malloc_info, malloc_trim, 
  * malloc_usable_size, mallopt, mcheck, mtrace, posix_memalign 
  */
-void free_r(HEAP_info* heap, void* ptr) 
+void free_r(xHeapArea_t* heap, void* ptr) 
 {
-    HEAP_chunk* chunk = alloc_chunk(ptr);
-    HEAP_chunk* prev = NULL;
-    HEAP_chunk* next = NULL;
+    xHeapChunk_t* chunk = alloc_chunk(ptr);
+    xHeapChunk_t* prev = NULL;
+    xHeapChunk_t* next = NULL;
     
+
+    if (heap->flags & ALLOC_PARANOID) {
+        if (memcorrupt_r(heap)) {
+            kprintf ("HEAP IS CORRUPTED #4\n");
+        }
+    }
+
     if ((size_t)chunk < (size_t)heap->start || (size_t)chunk > heap->max) {
         return;
     }
 
     _LOCK(heap);
-    prev = (HEAP_chunk*)((size_t)chunk - (size_t)chunk->prev_size);
-    next = (HEAP_chunk*)((size_t)chunk + (size_t)chunk->chunk_size);
+    prev = (xHeapChunk_t*)((size_t)chunk - (size_t)chunk->prev_size);
+    next = (xHeapChunk_t*)((size_t)chunk + (size_t)chunk->chunk_size);
 
     // If we ask for heap corruption checks
     if (heap->flags & ALLOC_CHECK) {
@@ -213,6 +244,13 @@ void free_r(HEAP_info* heap, void* ptr)
             heap->flags |= ALLOC_CORRUPTED;
         if (heap->flags & ALLOC_CORRUPTED) {
             _UNLOCK(heap);
+
+            if (heap->flags & ALLOC_PARANOID) {
+                if (memcorrupt_r(heap)) {
+                    kprintf ("HEAP IS CORRUPTED #5\n");
+                }
+            }
+
             return;
         }
     }
@@ -235,13 +273,20 @@ void free_r(HEAP_info* heap, void* ptr)
         alloc_rem_of_free(heap, next);
         // next->is_used = FALSE;
         chunk->chunk_size += next->chunk_size;
-        next = (HEAP_chunk*)((size_t)chunk + (size_t)chunk->chunk_size);
+        next = (xHeapChunk_t*)((size_t)chunk + (size_t)chunk->chunk_size);
         if ((size_t)next < heap->max)
             next->prev_size = chunk->chunk_size;
     }
     
     // Freed the chunk
     alloc_add_to_free (heap, chunk);
+
+    if (heap->flags & ALLOC_PARANOID) {
+        if (memcorrupt_r(heap)) {
+            kprintf ("HEAP IS CORRUPTED #6\n");
+        }
+    }
+
     _UNLOCK(heap);
 }
 
@@ -262,9 +307,10 @@ void free_r(HEAP_info* heap, void* ptr)
  * @see brk, mmap, alloca, malloc_get_state, malloc_info, malloc_trim, 
  * malloc_usable_size, mallopt, mcheck, mtrace, posix_memalign 
  */
-void* memalign_r(HEAP_info* heap, size_t alignment, size_t size) 
+#if 0
+void* memalign_r(xHeapArea_t* heap, size_t alignment, size_t size) 
 {
-    HEAP_chunk* chunk;
+    xHeapChunk_t* chunk;
     int* ptr, *aptr;
 
     if (!bpw2(alignment)) {
@@ -282,13 +328,13 @@ void* memalign_r(HEAP_info* heap, size_t alignment, size_t size)
     //  chunk->chunk_size = ;
     }
 
-    aptr = (int*)ALIGN(ptr, alignment);
+    aptr = (int*)ALIGN((uintptr_t)ptr, alignment);
 
 
 
     return (ptr);
 }
-
+#endif
 /**
  * @brief retrace the heap to detect memory corruption
  * @return zero if the heap is not corrupted, non zero is errors have been
@@ -298,14 +344,14 @@ void* memalign_r(HEAP_info* heap, size_t alignment, size_t size)
  * the number of blocks. Compare that to the free list and check list 
  * consistency.
  */
-int memcorrupt_r (HEAP_info* heap) 
+int memcorrupt_r (xHeapArea_t* heap) 
 {
     int err = 0;
     int free_chunks = 0;
     int total_chunks = 0;
     uintmax_t lsize = 0;
-    HEAP_chunk* chunk = heap->free_list;
-    HEAP_chunk* prev = NULL;
+    xHeapChunk_t* chunk = heap->free_list;
+    xHeapChunk_t* prev = NULL;
     while (chunk != NULL) {
         free_chunks++;
         if (chunk->is_used)
@@ -324,10 +370,11 @@ int memcorrupt_r (HEAP_info* heap)
     while ((size_t)chunk < heap->max) {
         total_chunks++;
         if (chunk->is_used) {
-            if (chunk->next_chunk != (HEAP_chunk*)0xcccccccc) 
+            /*
+            if (chunk->next_chunk != (xHeapChunk_t*)0xcccccccc) 
                 err++;
-            if (chunk->prev_chunk != (HEAP_chunk*)0xcccccccc) 
-                err++;
+            if (chunk->prev_chunk != (xHeapChunk_t*)0xcccccccc) 
+                err++; */
         } else {
             free_chunks--;
             if ((uint32_t)chunk->next_chunk & 7)
@@ -339,7 +386,7 @@ int memcorrupt_r (HEAP_info* heap)
         if (chunk->prev_size != lsize)
             err++;
         lsize = chunk->chunk_size;
-        chunk = (HEAP_chunk*)((size_t)chunk + (size_t)chunk->chunk_size);
+        chunk = (xHeapChunk_t*)((size_t)chunk + (size_t)chunk->chunk_size);
     }
     
     if (free_chunks != 0) 

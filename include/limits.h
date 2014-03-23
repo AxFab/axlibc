@@ -1,12 +1,7 @@
-#ifndef LIMITS_H_
-#define LIMITS_H_
+#ifndef LIMITS_H__
+#define LIMITS_H__
+#include <sys/version.h>
 /* ISO C89 Standard */
-
-#include <__std.h>
-
-#if defined (__cplusplus) 
-extern "C" {
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -557,8 +552,5 @@ The symbolic constants in the following list shall be defined in <limits.h> with
 
 /* ----------------------------------------------------------------------- */
 
-#if defined (__cplusplus) 
-}
-#endif
 
-#endif /* LIMITS_H_ */
+#endif /* LIMITS_H__ */

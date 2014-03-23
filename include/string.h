@@ -2,14 +2,12 @@
 #define STRING_H__
 /** ISO C99 Standard: 7.21 String handling	<string.h> */
 
-#include <__std.h>
-
-#if defined (__cplusplus) 
-extern "C" {
-#endif
-
 /* ----------------------------------------------------------------------- */
+#include <stddef.h>
 
+#if defined(__AX) || defined(__EX)
+#include <stdint.h>
+#endif
 
 /* ----- memory.c -------------------------------------------------------- */
 void* memcpy (void* __restrict dest, const void* __restrict src, size_t length);
@@ -64,7 +62,7 @@ char* strpbrk (const char* string, const char* accept);
 char* strstr (const char* haystack, const char* needle);
 size_t strlen (const char* string);
 
-#if defined __USE_POSIX || defined __USE_MISC
+#if defined(__U95) || defined(__EX)
 char* strtok_r (char* __restrict string, const char* __restrict delim, char **save);
 #endif
 
@@ -78,18 +76,13 @@ size_t strnlen (const char* string, size_t maxlen);
 #endif
 
 /* ----- error.c --------------------------------------------------------- */
-const char* strerror_r ( int err );
 char* strerror (int err);
 
 #if defined __USE_XOPEN2K || defined __USE_MISC
-#ifndef __USE_GNU
 int strerror_r (int err, char* buffer, size_t length);
-#else
-char* strerror_r (int err, char* buffer, size_t length);
-#endif
 #endif
 
-#if defined __USE_XOPEN2K8 && defined __UCLIBC_HAS_XLOCALE__
+#if defined (__LOCAL)
 char* strerror_l (int err, __locale_t locale);
 #endif
 
@@ -144,8 +137,5 @@ int bclearbytes (uint8_t* table, int offset, int length);
 
 /* ----------------------------------------------------------------------- */
 
-#if defined (__cplusplus) 
-}
-#endif
 
 #endif /* STRING_H_ */

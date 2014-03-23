@@ -5,6 +5,10 @@
 *
 !*/
 
+# Disable directory
+build/
+3rdparty/
+
 # Allow repository files
 !.gitignore
 !LICENSE
@@ -17,3 +21,4 @@
 # Allow source files
 !*.c
 !*.h
+!*.asm

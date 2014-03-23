@@ -1,26 +1,8 @@
-#ifndef STDDEF_H_
-#define STDDEF_H_
+#ifndef STDDEF_H__
+#define STDDEF_H__
+#include <sys/version.h>
 /* ISO C99 Standard: 	<stddef.h> */
 
-#include <errno.h>
-
-#if defined (__cplusplus) 
-extern "C" {
-#endif
-
-/* ----------------------------------------------------------------------- */
-
-
-#if defined (__EX)
-# define _Ko_	(1024)
-# define _Mo_	(1024 * _Ko_)
-# define _Go_	(1024 * _Mo_)
-# define _To_	(1024 * _Go_)
-# define _Po_	(1024 * _To_)
-# define _Eo_	(1024 * _Po_)
-# define _Zo_	(1024 * _Eo_)
-# define _Yo_	(1024 * _Zo_)
-#endif 
 
 #define NULL    0
 #define EOF    (-1)
@@ -30,6 +12,10 @@ extern "C" {
 typedef long ptrdiff_t;			/*< Result of pointer subtraction (type ) */
 typedef unsigned long size_t;	/*< Unsigned integral type (type ) */
 // typedef short wchar_t; // TODO wide char and really wide char, try to correct unicode approach
+typedef size_t fpos_t;
+typedef long int off_t;
+typedef long int wchar_t;
+
 
 typedef long max_align_t;	/*< Type with widest scalar alignment (type ) */
 
@@ -38,10 +24,6 @@ typedef long max_align_t;	/*< Type with widest scalar alignment (type ) */
 //typedef unsigned int time_t;
 // typedef long pid_t;
 
-/* ----------------------------------------------------------------------- */
 
-#if defined (__cplusplus) 
-}
-#endif
 
-#endif /* STDDEF_H_ */
+#endif /* STDDEF_H__ */
