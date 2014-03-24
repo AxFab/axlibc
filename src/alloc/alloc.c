@@ -9,7 +9,7 @@ int bpw2 (unsigned long );
 static void alloc_add_to_free (xHeapArea_t* heap, xHeapChunk_t* chunk) 
 {
     xHeapChunk_t* curs = heap->free_list;
-    chunk->is_used &= ~ALLOC_ISUSED;
+    chunk->is_used = 0; //  &= ~ALLOC_ISUSED;
 
     // In case there is no available blocks
     if ( !curs ) {
@@ -71,7 +71,7 @@ static void alloc_rem_of_free (xHeapArea_t* heap, xHeapChunk_t* chunk)
  */
 void meminit_r(xHeapArea_t* heap, void* base, size_t length) 
 {
-    kprintf ("HEAP WILL BE WATCH\n");
+    // kprintf ("HEAP WILL BE WATCH\n");
     heap->flags |= ALLOC_PARANOID;
     heap->start = ( xHeapChunk_t* ) ALIGN ( (uintptr_t)base, ALLOC_MIN_CHUNK );
     heap->free_list = NULL;
@@ -181,7 +181,7 @@ void* malloc_r(xHeapArea_t* heap, size_t size)
                 }
             }
 
-            kprintf ("MALLOc RETURN 0x%x or 0x%x\n", chunk->data, &chunk->prev_chunk);
+            // kprintf ("MALLOc RETURN 0x%x or 0x%x\n", chunk->data, &chunk->prev_chunk);
             return (chunk->data);
         }
 
@@ -354,12 +354,18 @@ int memcorrupt_r (xHeapArea_t* heap)
     xHeapChunk_t* prev = NULL;
     while (chunk != NULL) {
         free_chunks++;
-        if (chunk->is_used)
+        if (chunk->is_used) {
+            kprintf ("Free chunk at 0x%x mark as used\n", chunk);
             err++;
-        if (chunk->prev_chunk != prev) 
+        }
+        if (chunk->prev_chunk != prev) {
+            kprintf ("Free Chunk at 0x%x isn't link to previous\n", chunk);
             err++;
-        if (chunk->chunk_size < lsize)
+        }
+        if (chunk->chunk_size < lsize) {
+            kprintf ("Free chunk at 0x%x is smaller than previous ones\n", chunk);
             err++;
+        }
         lsize = chunk->chunk_size;
         prev = chunk;
         chunk = chunk->next_chunk;
@@ -383,16 +389,22 @@ int memcorrupt_r (xHeapArea_t* heap)
                 err++;
         }
         
-        if (chunk->prev_size != lsize)
+        if (chunk->prev_size != lsize) {
+            kprintf ("Wrong prev size mark at 0x%x\n", chunk);
             err++;
+        }
         lsize = chunk->chunk_size;
         chunk = (xHeapChunk_t*)((size_t)chunk + (size_t)chunk->chunk_size);
     }
     
-    if (free_chunks != 0) 
+    if (free_chunks != 0) {
+        kprintf ("Free chunks not referenced\n", chunk);
         err++;
-    if ((size_t)chunk != heap->max) 
-        err++;
+    }
+    if ((size_t)chunk != heap->max) {
+        kprintf ("Incomplete chunk map\n", chunk);
+        err++; 
+    }
 
     return (err);
 }

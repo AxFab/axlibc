@@ -41,7 +41,31 @@ void test_stack ()
     TEST ("#4", 0, memcorrupt_r (&heap));
   }
 }
+void test_big () {
 
+  xHeapArea_t heap;
+  meminit_r (&heap, malloc (0x80000), 0x80000 - 64);
+
+  malloc_r(&heap, 64);
+  malloc_r(&heap, 64);
+  malloc_r(&heap, 64);
+  void* big = malloc_r(&heap, 1024);
+  TEST ("#1", 0, memcorrupt_r (&heap));
+
+  malloc_r(&heap, 64);
+  malloc_r(&heap, 64);
+  free_r (&heap, big);
+  TEST ("#2", 0, memcorrupt_r (&heap));
+
+  malloc_r(&heap, 64);
+  TEST ("#3", 0, memcorrupt_r (&heap));
+}
+
+
+int kprintf (const char *msg) {
+  printf ("%s",msg);
+  return 0;
+}
 
 int main () 
 {
@@ -53,7 +77,7 @@ int main ()
   malloc_r(&heap, 64);
   TEST ("#2", 0, memcorrupt_r (&heap));
 
-  test_stack ();
+  test_big ();
 
 
 
