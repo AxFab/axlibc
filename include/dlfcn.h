@@ -1,6 +1,9 @@
 #ifndef DLFCN_H__
 #define DLFCN_H__
-#include <sys/version.h>
+
+#include <features.h>
+
+__AXLIBC_BEG
 
 /** Open the shared object FILE and map it in.
  * @return A handle that can be passed to 'dlsym' to get symbol values from it.
@@ -19,5 +22,7 @@ void* dlsym (void* library, const char* name);
  * string describing the error
  */
 char* dlerror (void);
+
+__AXLIBC_END
 
 #endif /* DLFCN_H__ */

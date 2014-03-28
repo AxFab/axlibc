@@ -1,7 +1,7 @@
 #ifndef ISO646_H__
 #define ISO646_H__
-#include <sys/version.h>
 
+// Define ISO646 binary operands
 #define and     &&
 #define and_eq  &=
 #define bitand  &

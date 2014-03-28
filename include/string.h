@@ -5,9 +5,11 @@
 /* ----------------------------------------------------------------------- */
 #include <stddef.h>
 
-#if defined(__AX) || defined(__EX)
+#if defined(__AX) || defined(__C99)
 #include <stdint.h>
 #endif
+
+__AXLIBC_BEG
 
 /* ----- memory.c -------------------------------------------------------- */
 void* memcpy (void* __restrict dest, const void* __restrict src, size_t length);
@@ -137,5 +139,6 @@ int bclearbytes (uint8_t* table, int offset, int length);
 
 /* ----------------------------------------------------------------------- */
 
+__AXLIBC_END
 
 #endif /* STRING_H_ */

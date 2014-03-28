@@ -1,13 +1,15 @@
 #ifndef LIMITS_H__
 #define LIMITS_H__
-#include <sys/version.h>
-/* ISO C89 Standard */
 
-/* ----------------------------------------------------------------------- */
+#include <features.h>
+#include <datamodel.h>
 
-#define MB_LEN_MAX      16                      /*< Maximum length of any multibyte character in any locale. */
-#define CHAR_BIT        8                       //< Number of bits in a 'char'.
-#define LONG_BIT        32                      //< Number of bits in a 'long'.
+// ===========================================================================
+// Define limits for integer size
+
+#define MB_LEN_MAX      16                      //< Maximum length of any multibyte character in any locale. */
+#define CHAR_BIT        __CHAR_BITS             //< Number of bits in a 'char'.
+#define LONG_BIT        __LONG_BITS             //< Number of bits in a 'long'.
 #define WORD_BIT        16                      //< Number of bits in a 'word'.
 
 #define SCHAR_MIN       (-128)                  //< Minimum values a 'signed char' can hold.
@@ -551,6 +553,5 @@ The symbolic constants in the following list shall be defined in <limits.h> with
 #endif
 
 /* ----------------------------------------------------------------------- */
-
 
 #endif /* LIMITS_H__ */

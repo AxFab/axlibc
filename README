@@ -1,6 +1,111 @@
-axLibc
-======
+# axLibc
+__version 0.1__
 
-  Personnal implementation of the standard c library.
-  This implementation is minimalist. The purpose is to provide basic functions
-  for my peronnal kernel. 
+_Personal implementation of the standard c library.
+  This implementation is minimalist and try to be a simple as possible._
+
+_This project start as a mean to provide basic standard functionality inside my 
+  personal kernel, and have been continued to create yet an other alternative 
+  to Glibc._
+
+## Features
+
+### Standard compliant
+
+I'm currently working on implement c89 standard of the C library.
+
+## Installing
+
+### C Runtime
+
+  Some systems use crt0.o, while some use crt1.o. (Some even use larger number 
+  like crt2.o).
+  
+  The C runtime usally contain several source file that contribute to 
+  prolog/epilog routines and to expose the _start entry point. On most systems, 
+  this function is in charge to intialize ABI requirements like the stack, heap
+  segment, standard pipes and args/env variables.
+
+  The AxLibc provide two c-runtimes, crt0 is made for standard C program and 
+  crt1 contains extension for C++ programs.
+
+
+## Porting
+
+### Config file
+
+_TODO: create a config file with all configuration macros_
+
+### Architecture requierments
+
+_TODO: create a config file with all configuration macros_
+
+### Operating system requierments
+
+For some functions the library will need to use the kernel functionality. 
+Depending of your platefrom, you may need to update this _glue_ to adapt the
+library to your system. all files are defined in the directory 
+`src/glue/[system]`.
+
+This pool of source code need to redefined some function:
+
+    void _exit (int status) _noreturn;
+    int open (const char* filename, int oflags, int mode);
+    int close (int fd);
+
+### Pull requests
+
+
+
+## Internal config
+
+### Feature related defines
+
+  The GNU libc contains a plethora of define variable to be able to build 
+  various different of library version depending on which standard you wish 
+  to use. Like AxLibc pretend to be much more simple, we only defined few 
+  macros that will act as switch for libc features.
+
+  If defined, user program which included library headers will requests 
+  additions from relevant standard or Unix flavor. See features.h for full 
+  list.
+
+      BSC _ C89 _ C99 
+
+  **BSC** - Basic library. This template contains only method that are 
+          platform-dependent. There is not a single syscall, need for heap 
+          segment or any environment variables. This library doesn't have a 
+          single dependency, the main purpose was to be insert into a kernel 
+          code. This library is design to be insert in any os-less programs.
+          It contains mostly string or memory manipulation, string format and
+          standard types. I also had the algorithm for chunk allocation but 
+          you need to provide a memory area at each calls.
+
+  **C89** - This is the old standard for C89 library. The library contains the 
+          headers: assert, errno, limits, stddef, stdio, stdlib and string.
+
+  **C99** - Based on C89, this is the standard for C99 library.
+
+### Architecture defines
+
+  * **Endianess**: `__BIGENDIAN` or `__LITTLEENDIAN`
+
+  * **Architecture data model**: `__LP32`, `__ILP32`, `__LLP64`, `__LP64`, 
+    `__ILP64` or `__SILP64`
+
+  * **Cpu features**: none
+
+  * **Lib methods**: not implemented - `__MTH_MACRO`, `__MTH_INLINES` or 
+    `__MTH_EXTERN`
+
+### Attribute defines
+
+  * _nothrow
+
+  * _noreturn
+
+  * _pure
+
+  * _restrict
+
+

@@ -1,7 +1,5 @@
 #ifndef ERRNO_H_
 #define ERRNO_H_
-#include <sys/version.h>
-
 
 extern int errno;
 

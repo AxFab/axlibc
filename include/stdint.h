@@ -1,22 +1,15 @@
 #ifndef STDINT_H_
 #define STDINT_H_
-#include <sys/version.h>
-/* ISO C99 Standard: 7.18 Integer types <stdint.h> */
+#include <datamodel.h>
+#include <features.h>
+
+__AXLIBC_BEG
 
 #if !(defined(__C99) || defined(__EX))
 #  error stdint is not available, use ISO C99 Standard. 
 #endif
 
 /* ----------------------------------------------------------------------- */
-
-/*  ARCH      | 16 | 32 |    64 |
- * -----------|----|----|-------|
- * char       |  8 |  8 |     8 |
- * short      |  8 | 16 |    16 |
- * int        | 16 | 32 |    32 |
- * long       | 32 | 32 | 32/64 |
- * long long  |  X | 64 |    64 |
- */
 
 typedef signed char int8_t;         /*< 8-bit signed type. */
 typedef unsigned char uint8_t;        /*< 8-bit unsigned type. */
@@ -168,5 +161,6 @@ typedef uint64_t uintmax_t;
 
 /* ----------------------------------------------------------------------- */
 
+__AXLIBC_END
 
 #endif /* STDINT_H_ */

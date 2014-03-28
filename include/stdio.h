@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <limits.h>
 
+__AXLIBC_BEG
 
 // ===========================================================================
 // Config --------------------------------------------------------------------
@@ -156,5 +157,6 @@ extern int optind, opterr, optopt;
 #define putc(c,fp)
 #define putchar(c)
 */
+__AXLIBC_END
 
 #endif /* STDIO_H__ */

@@ -1,17 +1,12 @@
 #ifndef STDBOOL_H_
 #define STDBOOL_H_
-/* ISO C99 Standard: */
-
-#include <__std.h>
+#include <features.h>
 
 #if !(defined(__C99) || defined(__EX))
 #  error stdbool is not available, use ISO C99 Standard. 
 #endif
 
-#if defined (__cplusplus) 
-extern "C" {
-#endif
-
+__AXLIBC_BEG
 /* ----------------------------------------------------------------------- */
 
 
@@ -24,8 +19,6 @@ extern "C" {
 
 /* ----------------------------------------------------------------------- */
 
-#if defined (__cplusplus) 
-}
-#endif
+__AXLIBC_END
 
 #endif /* STDBOOL_H_ */
