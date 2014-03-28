@@ -3,10 +3,9 @@
 // ---------------------------------------------------------------------------
 int fill_cache (FILE* stream)
 {
-  size_t bread;
-  int res = read( stream->_fd, stream->_cache, stream->_bufsize, &bread);
+  size_t bread = read( stream->_fd, stream->_cache, stream->_bufsize);
 
-  if (res) {
+  if (bread != stream->_bufsize) {
       if (bread == 0) {
         stream->_oflags |= OF_EOF;
         return EOF;
@@ -30,13 +29,13 @@ int flush_cache (FILE* stream)
   size_t written = 0;
 
   while (written != stream->_bufidx) {
-    size_t rest = stream->_bufidx - written;
-    int res = write( stream->_fd, stream->_cache+ written, rest, &rest);
+    size_t wrest = stream->_bufidx - written;
+    size_t rest = write( stream->_fd, stream->_cache+ written, wrest);
 
     written += rest;
     stream->_position += rest;
 
-    if (res) {
+    if (rest != wrest) {
       stream->_oflags |= OF_ERR;
       stream->_bufidx -= written;
       memmove(stream->_cache, stream->_cache + written, stream->_bufidx);

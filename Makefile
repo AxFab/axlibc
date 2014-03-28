@@ -15,24 +15,33 @@ date = $(shell date '+%d %b %Y')
 
 pack_cflags =  -D_DATE_=\"'$(date)'\" -D_OS_FULLNAME_=\"'$(system)'\"
 
-cflags = $(pack_cflags) -Wall -Wextra -Wno-unused-parameter
+cflags = $(pack_cflags) 
+cflags += -Wall -Wextra -Wpointer-arith -Wshadow -Wcast-align -Winline -Wimplicit 
+# cflags += -fPIC
 
-std_debug_cflags = 			$(cflags) -g -ggdb
+std_debug_cflags = 			$(cflags) -g -ggdb 
 std_release_cflags =  	$(cflags) -fPIC -O3
 
 
 # ===========================================================================
 
+glue_f: libaxc
+	@objdump $(lib_dir)/libaxc.so -x | grep '*UND*' | \
+	 awk '{ print $4 } ' | sort | uniq
+
 
 # Target: Library  libAxStdC
-libAxStdC_src = \
+libaxc_src = \
 		$(patsubst src/%,%,$(wildcard src/alloc/*.c)) \
-		$(patsubst src/%,%,$(wildcard src/string/*.c)) \
-		$(patsubst src/%,%,$(wildcard src/format/*.c)) 
-libAxStdC_inc = include/
-libAxStdC_cflags =  $(std_$(mode)_cflags) -nostdinc -D__C99
-libAxStdC_lflags = -nostdlib
-$(eval $(call LIBRARY,libAxStdC))
+		$(patsubst src/%,%,$(wildcard src/crypto/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/format/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/stdio/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/stdlib/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/string/*.c)) 
+libaxc_inc = include/
+libaxc_cflags =  $(std_$(mode)_cflags) -nostdinc -D__C99
+libaxc_lflags = -nostdlib
+$(eval $(call LIBRARY,libaxc))
 
 
 

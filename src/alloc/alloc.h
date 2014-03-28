@@ -1,12 +1,10 @@
-#pragma once
-/* OS Libc Implementation: 	<prv/alloc.h> */
-
-#ifndef __STD_H_
-# include <__std.h>
-#endif
-
 #ifndef __ALLOC_H_
 #define __ALLOC_H_
+
+#include <stddef.h>
+#include <stdint.h>
+
+__AXLIB_BEG
 
 /* Private Macros ---------------------------------------------------------- */
 #define ALLOC_MAX_CHUNK		0x30000000
@@ -145,5 +143,7 @@ void* memalign_r(HEAP_info* heap, size_t alignment, size_t size);
  * consistency.
  */
 int memcorrupt_r (HEAP_info* heap);
+
+__AXLIB_END
 
 #endif /* __ALLOC_H_ */

@@ -1,35 +1,5 @@
 #include <stdlib.h>
-#include <errno.h>
 #include <prv/stream.h>
-
-// ---------------------------------------------------------------------------
-void clearerr (FILE* stream)
-{
-  flockfile (stream);
-  stream->_oflags &= ~(OF_ERR | OF_EOF);
-  funlockfile (stream);
-}
-
-
-// ---------------------------------------------------------------------------
-int feof (FILE* stream)
-{
-  flockfile (stream);
-  int eof = stream->_oflags & OF_EOF;
-  funlockfile (stream);
-  return eof;
-}
-
-
-// ---------------------------------------------------------------------------
-int ferror (FILE* stream)
-{
-  flockfile (stream);
-  int error = stream->_oflags & OF_ERR;
-  funlockfile (stream);
-  return error;
-}
-
 
 // ---------------------------------------------------------------------------
 

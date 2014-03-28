@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <errno.h>
 #include <prv/stream.h>
 
 // ===========================================================================
@@ -206,7 +205,8 @@ FILE *freopen(const char *restrict file, const char *restrict mode, FILE *restri
   /* flush buffers */
   if (stream->_oflags &= (O_WRONLY | O_RDWR)) {
     if (flush_cache (stream) == EOF) {
-      return EOF;
+      funlockfile (stream);
+      return NULL;
     }
   }
 
@@ -218,12 +218,13 @@ FILE *freopen(const char *restrict file, const char *restrict mode, FILE *restri
   close (stream->_fd);
 
   /* Re-add the flags we saved above */
-  stream->_oflags |= status;
+  stream->_oflags |= oflags;
   stream->_bufidx = 0;
   stream->_bufend = 0;
   stream->_ungetidx = 0;
   
-  if ( ! open( &stream->_fd, stream->_oflags) )
+  stream->_fd = open(stream->_path, stream->_oflags, 0);
+  if (stream->_fd == 0)
   {
     funlockfile( stream );
     return NULL;

@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <errno.h>
+#include <unistd.h>
 
 #define restrict 
 
@@ -29,7 +31,6 @@
 
 #define UNGET_BUFSIZ 8
 typedef int axMutex_t;
-typedef uint64_t off_t;
 typedef struct axStream FILE;
 
 struct axStream 
@@ -59,9 +60,6 @@ int mtx_init(axMutex_t *mutex, int flags);
 #define MTX_SUCESS	0
 #define MTX_BUZY	1
 
-int open (const char* restrict file, int oflags, int mode);
-int close (int fd);
-off_t lseek(int fd, off_t pos, int whence);
 
 void flockfile (FILE* restrict stream);
 void funlockfile (FILE* restrict stream);

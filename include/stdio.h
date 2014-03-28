@@ -53,10 +53,15 @@ extern FILE *stderr;          /**< Standard error output stream.  */
 
 
 // ===========================================================================
-// Functions prototypes ------------------------------------------------------
+// Functions prototypes - close.c---------------------------------------------
+void clearerr (FILE* stream);
+int feof (FILE* stream);
+int ferror (FILE* stream);
+int fclose (FILE* stream);
+int fileno (FILE* stream);
+
 
 /* access.c --------------------------------------------------------------- */
-int      fclose(FILE *fp);
 FILE    *fdopen(int, const char *);
 FILE    *fopen(const char *, const char *);
 FILE    *freopen(const char *, const char *, FILE *);
@@ -93,10 +98,7 @@ int      sprintf(char *, const char *, ...);
 int      sscanf(const char *, const char *, ...);
 
 /* info.c ----------------------------------------------------------------- */
-void    clearerr(FILE *fp);
-int     feof(FILE *fp);
-int     ferror(FILE *);
-int     fileno(FILE *fp);
+
 char   *tempnam(const char *, const char *);
 FILE   *tmpfile(void);
 char   *tmpnam(char *);
@@ -113,10 +115,10 @@ FILE    *popen(const char *, const char *);
 /* seek.c ----------------------------------------------------------------- */
 int      fgetpos(FILE *, fpos_t *);
 int      fseek(FILE *, long int, int);
-int      fseeko(FILE *, off_t, int);
+// int      fseeko(FILE *, off_t, int);
 int      fsetpos(FILE *, const fpos_t *);
 long int ftell(FILE *);
-off_t    ftello(FILE *);
+// off_t    ftello(FILE *);
 void     rewind(FILE *);
 
 /* string.c --------------------------------------------------------------- */
@@ -146,10 +148,6 @@ extern int optind, opterr, optopt;
 
 
 /* ======================================================================== */
-#define feof(fp)          ((fp)->_eof)
-#define ferror(fp)        ((fp)->_err)
-#define clearerr(fp)      ((fp)->_err = (fp)->_eof = 0)
-#define fileno(fp)        ((fp)->_fd)
 
 /* Replace by what !?
 #define getc(fp)          

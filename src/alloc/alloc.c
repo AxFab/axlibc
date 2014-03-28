@@ -71,7 +71,6 @@ static void alloc_rem_of_free (xHeapArea_t* heap, xHeapChunk_t* chunk)
  */
 void meminit_r(xHeapArea_t* heap, void* base, size_t length) 
 {
-    // kprintf ("HEAP WILL BE WATCH\n");
     heap->flags |= ALLOC_PARANOID;
     heap->start = ( xHeapChunk_t* ) ALIGN ( (uintptr_t)base, ALLOC_MIN_CHUNK );
     heap->free_list = NULL;
@@ -119,7 +118,7 @@ void* malloc_r(xHeapArea_t* heap, size_t size)
 
     if (heap->flags & ALLOC_PARANOID) {
         if (memcorrupt_r(heap)) {
-            kprintf ("HEAP IS CORRUPTED #1\n");
+            __axlog ("HEAP IS CORRUPTED #1\n");
         }
     }
 
@@ -177,11 +176,11 @@ void* malloc_r(xHeapArea_t* heap, size_t size)
 
             if (heap->flags & ALLOC_PARANOID) {
                 if (memcorrupt_r(heap)) {
-                    kprintf ("HEAP IS CORRUPTED #2\n");
+                    __axlog ("HEAP IS CORRUPTED #2\n");
                 }
             }
 
-            // kprintf ("MALLOc RETURN 0x%x or 0x%x\n", chunk->data, &chunk->prev_chunk);
+            // __axlog ("MALLOc RETURN 0x%x or 0x%x\n", chunk->data, &chunk->prev_chunk);
             return (chunk->data);
         }
 
@@ -193,7 +192,7 @@ void* malloc_r(xHeapArea_t* heap, size_t size)
 
     if (heap->flags & ALLOC_PARANOID) {
         if (memcorrupt_r(heap)) {
-            kprintf ("HEAP IS CORRUPTED #3\n");
+            __axlog ("HEAP IS CORRUPTED #3\n");
         }
     }
 
@@ -222,7 +221,7 @@ void free_r(xHeapArea_t* heap, void* ptr)
 
     if (heap->flags & ALLOC_PARANOID) {
         if (memcorrupt_r(heap)) {
-            kprintf ("HEAP IS CORRUPTED #4\n");
+            __axlog ("HEAP IS CORRUPTED #4\n");
         }
     }
 
@@ -247,7 +246,7 @@ void free_r(xHeapArea_t* heap, void* ptr)
 
             if (heap->flags & ALLOC_PARANOID) {
                 if (memcorrupt_r(heap)) {
-                    kprintf ("HEAP IS CORRUPTED #5\n");
+                    __axlog ("HEAP IS CORRUPTED #5\n");
                 }
             }
 
@@ -283,7 +282,7 @@ void free_r(xHeapArea_t* heap, void* ptr)
 
     if (heap->flags & ALLOC_PARANOID) {
         if (memcorrupt_r(heap)) {
-            kprintf ("HEAP IS CORRUPTED #6\n");
+            __axlog ("HEAP IS CORRUPTED #6\n");
         }
     }
 
@@ -355,15 +354,15 @@ int memcorrupt_r (xHeapArea_t* heap)
     while (chunk != NULL) {
         free_chunks++;
         if (chunk->is_used) {
-            kprintf ("Free chunk at 0x%x mark as used\n", chunk);
+            __axlog ("Free chunk at 0x%x mark as used\n", chunk);
             err++;
         }
         if (chunk->prev_chunk != prev) {
-            kprintf ("Free Chunk at 0x%x isn't link to previous\n", chunk);
+            __axlog ("Free Chunk at 0x%x isn't link to previous\n", chunk);
             err++;
         }
         if (chunk->chunk_size < lsize) {
-            kprintf ("Free chunk at 0x%x is smaller than previous ones\n", chunk);
+            __axlog ("Free chunk at 0x%x is smaller than previous ones\n", chunk);
             err++;
         }
         lsize = chunk->chunk_size;
@@ -390,7 +389,7 @@ int memcorrupt_r (xHeapArea_t* heap)
         }
         
         if (chunk->prev_size != lsize) {
-            kprintf ("Wrong prev size mark at 0x%x\n", chunk);
+            __axlog ("Wrong prev size mark at 0x%x\n", chunk);
             err++;
         }
         lsize = chunk->chunk_size;
@@ -398,14 +397,13 @@ int memcorrupt_r (xHeapArea_t* heap)
     }
     
     if (free_chunks != 0) {
-        kprintf ("Free chunks not referenced\n", chunk);
+        __axlog ("Free chunks not referenced\n", chunk);
         err++;
     }
     if ((size_t)chunk != heap->max) {
-        kprintf ("Incomplete chunk map\n", chunk);
+        __axlog ("Incomplete chunk map\n", chunk);
         err++; 
     }
 
     return (err);
 }
-

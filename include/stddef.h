@@ -2,6 +2,7 @@
 #define STDDEF_H__
 
 #include <features.h>
+#include <datamodel.h>
 
 __AXLIBC_BEG
 
@@ -26,7 +27,6 @@ __AXLIBC_BEG
 
 // typedef short wchar_t; // TODO wide char and really wide char, try to correct unicode approach
 typedef size_t fpos_t;
-typedef size_t off_t;
 typedef long int wchar_t;
 
 

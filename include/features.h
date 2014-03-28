@@ -35,7 +35,7 @@
 
    We simplify this diagram by this one:
          
-      C89 _ C99 _ UNX  _ UXE
+      C89 _ C99 _ UNX  _ XOPN
                 \ IEEE _ BSD
                        \ SVID
 
@@ -57,7 +57,7 @@
 #  define _THREAD_SAFE
 #endif
 
-#if define(_LARGEFILE_SOURCE) || define(_LARGEFILE64_SOURCE)
+#if defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE)
 #  define _IO_EXT
 #endif
 
@@ -70,14 +70,14 @@
 #endif
 
 #if defined (_XOPEN_SOURCE_EXTENDED)
-# define __UXE
+# define __XOPN
 #endif
 
 #if defined (_XOPEN_SOURCE)
 # define __UNX
 #endif
 
-#if define(_POSIX_SOURCE) || define(_POSIX_C_SOURCE)
+#if defined(_POSIX_SOURCE) || defined(_POSIX_C_SOURCE)
 #  define __IEEE
 #endif
 
@@ -92,19 +92,19 @@
 // ---------------------------------------------------------------------------
 // Resolve dependancies
 
-#if define(__BSD) || define(__SVID)
+#if defined(__BSD) || defined(__SVID)
 #  define __IEEE
 #endif
 
-#if define(__UXE)
+#if defined(__XOPN)
 #  define __UNX
 #endif
 
-#if define(__UNX) || define(__IEEE)
+#if defined(__UNX) || defined(__IEEE)
 #  define __C99
 #endif
 
-#if define(__C99)
+#if defined(__C99)
 #  define __C89
 #endif
 
@@ -115,9 +115,23 @@
 #  define __IEEE
 #endif
 
+// ---------------------------------------------------------------------------
+// Header file prolog and epilog
+#ifdef __cplusplus
+#  define __AXLIBC_BEG      extern "C" {
+#  define __AXLIBC_END      }
+#else
+#  define __AXLIBC_BEG
+#  define __AXLIBC_END
+#endif
 
-#define __AXLIBC_BEG      extern "C" {
-#define __AXLIBC_END      }
 
+
+// ---------------------------------------------------------------------------
+__AXLIBC_BEG
+
+#define __axlog(msg, ...)   ((void)(0))
+
+__AXLIBC_END
 
 #endif /* FEATURES_H__ */

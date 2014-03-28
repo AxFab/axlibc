@@ -1,6 +1,35 @@
-#include <errno.h>
-#include <stdint.h>
 #include <prv/stream.h>
+
+
+uint64_t _ftell64 (FILE* stream)
+{
+  return ( stream->_position - ( ( (int)stream->_bufend - (int)stream->_bufidx ) + 
+    (int)stream->_ungetidx ) );
+}
+
+uint64_t ftell64 (FILE* stream)
+{
+  uint64_t off;
+
+  flockfile (stream);
+  off = _ftell64 (stream);
+  funlockfile (stream);
+  return off;
+}
+
+long ftell (FILE* stream)
+{
+  uint64_t off;
+  
+  off = ftell64 (stream);
+  if ( off > LONG_MAX ) {
+      __seterrno (ERANGE);
+      return EOF;
+  }
+
+  return off;
+}
+
 
 
 int fgetpos (FILE* restrict stream, fpos_t* restrict pos)
@@ -61,35 +90,4 @@ int fsetpos (FILE* stream, const fpos_t* pos)
   return ( stream->_position == *pos ) ? 0 : EOF;
 }
 
-
-
-
-uint64_t _ftell64 (FILE* stream)
-{
-  return ( stream->_position - ( ( (int)stream->_bufend - (int)stream->_bufidx ) + 
-    (int)stream->_ungetidx ) );
-}
-
-uint64_t ftell64 (FILE* stream)
-{
-  uint64_t off;
-
-  flockfile (stream);
-  off = _ftell64 (stream);
-  funlockfile (stream);
-  return off;
-}
-
-long ftell (FILE* stream)
-{
-  uint64_t off;
-  
-  off = ftell64 (stream);
-  if ( off > LONG_MAX ) {
-      __seterrno (ERANGE);
-      return EOF;
-  }
-
-  return off;
-}
 
