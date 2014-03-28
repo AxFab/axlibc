@@ -5,35 +5,54 @@
 #include <stdarg.h>
 #include <limits.h>
 
-/* ======================================================================== */
-#define _IOFBF    1           /**< Fully buffered.  */
-#define _IOLBF    2           /**< Line buffered.  */
-#define _IONBF    3           /**< No buffering.  */
+
+// ===========================================================================
+// Config --------------------------------------------------------------------
+#define BUFSIZ  65536 /**< Size of <stdio.h> buffers. */
+
+#define FILENAME_MAX 260
+#define FOPEN_MAX 20
+#define TMP_MAX 32767
+
+// ===========================================================================
+// Constants -----------------------------------------------------------------
+#define _IOFBF 0x1 /**< Input/output fully buffered. */
+#define _IOLBF 0x2 /**< Input/output line buffered. */
+#define _IONBF 0x4 /**< Input/output unbuffered. */
+
+#define SEEK_SET 0 /**< Seek relative to start-of-file. */
+#define SEEK_CUR 1 /**< Seek relative to current position. */
+#define SEEK_END 2 /**< Seek relative to end-of-file. */
+
+/* C89/C99 say they're macros. */
+#define stdout  stdout
+#define stdin   stdin
+#define stderr  stderr
+
+
 
 #define EOF       (-1)        /**< End of file character. */
-#define BUFSIZ    512         /**< File buffer size */
-
-#define SEEK_SET  0           /**< Seek from beginning of file.  */
-#define SEEK_CUR  1           /**< Seek from current position.  */
-#define SEEK_END  2           /**< Seek from end of file.  */
 
 #define P_tmpdir  "/tmp"      /**< Default path prefix for 'mkstemp'. */
 
-/* C89/C99 say they're macros. */
-#define stdin stdin
-#define stdout stdout
-#define stderr stderr
 
 
-/* ======================================================================== */
-typedef struct Stream_t FILE; /**< File opaque pointer */ 
+// ===========================================================================
+// Typedef FILE --------------------------------------------------------------
+typedef struct axStream FILE;
 
 /* Standard streams.  */
-extern FILE *stdin;           /**< Standard input stream.  */
 extern FILE *stdout;          /**< Standard output stream.  */
+extern FILE *stdin;           /**< Standard input stream.  */
 extern FILE *stderr;          /**< Standard error output stream.  */
 
-/* ======================================================================== */
+
+
+
+
+
+// ===========================================================================
+// Functions prototypes ------------------------------------------------------
 
 /* access.c --------------------------------------------------------------- */
 int      fclose(FILE *fp);
