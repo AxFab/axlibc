@@ -4,7 +4,7 @@
 /** @file sys/types.h
  * @brief data types
  * @version IEEE, Unix95, Unix98, POSIX, XSI
- * 
+ *
  */
 
 #include <stdint.h>
@@ -15,7 +15,7 @@ __AXLIBC_BEG
   System Identified
 =========================================================================== */
 
-/** Used as a general identifier; can be used to contain at least a pid_t, 
+/** Used as a general identifier; can be used to contain at least a pid_t,
  * uid_t, or gid_t.  */
 typedef long id_t;
 
@@ -45,7 +45,7 @@ typedef long blkcnt_t
 
 /** Used for block sizes. */
 typedef int blksize_t
-    
+
 /** Used for file system block counts.  */
 typedef unsigned long fsblkcnt_t;
 
@@ -71,7 +71,7 @@ typedef intptr_t ssize_t;
 
 /** Used for system times in clock ticks or CLOCKS_PER_SEC; see <time.h>. */
 typedef long clock_t;
-    
+
 /** Used for clock ID type in the clock and timer functions. */
 typedef int clockid_t;
 
@@ -115,31 +115,31 @@ typedef int trace_id_t;
 
 #if 0
 typedef int pthread_attr_t;
-     Used to identify a thread attribute object. 
+     Used to identify a thread attribute object.
 pthread_barrier_t
-    [BAR] Used to identify a barrier. 
+    [BAR] Used to identify a barrier.
 pthread_barrierattr_t
-    [BAR] Used to define a barrier attributes object. 
+    [BAR] Used to define a barrier attributes object.
 pthread_cond_t
-     Used for condition variables. 
+     Used for condition variables.
 pthread_condattr_t
-     Used to identify a condition attribute object. 
+     Used to identify a condition attribute object.
 pthread_key_t
-     Used for thread-specific data keys. 
+     Used for thread-specific data keys.
 pthread_mutex_t
-     Used for mutexes. 
+     Used for mutexes.
 pthread_mutexattr_t
-     Used to identify a mutex attribute object. 
+     Used to identify a mutex attribute object.
 pthread_once_t
-     Used for dynamic package initialization. 
+     Used for dynamic package initialization.
 pthread_rwlock_t
-     Used for read-write locks. 
+     Used for read-write locks.
 pthread_rwlockattr_t
-     Used for read-write lock attributes. 
+     Used for read-write lock attributes.
 pthread_spinlock_t
-    [SPI] Used to identify a spin lock. 
+    [SPI] Used to identify a spin lock.
 pthread_t
-     Used to identify a thread. 
+     Used to identify a thread.
 #endif
 
 

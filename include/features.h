@@ -7,7 +7,7 @@
    __STRICT_ANSI__               ISO Standard C. (C89)
    _ISOC99_SOURCE                Extensions to ISO C89 from ISO C99.
    _POSIX_SOURCE                 IEEE Std 1003.1.
-   _POSIX_C_SOURCE 
+   _POSIX_C_SOURCE
       1                          Eq. _POSIX_SOURCE
       > 2                        Add IEEE Std 1003.2
       > 199309L                  Add IEEE Std 1003.1b-1993
@@ -15,7 +15,7 @@
       > 200112L                  Add IEEE 1003.1-2004
       > 200809L                  Add IEEE 1003.1-2008
 
-   _XOPEN_SOURCE                 Includes POSIX and XPG things. 
+   _XOPEN_SOURCE                 Includes POSIX and XPG things.
       500                        Single Unix conformance
       600                        6th revision
       700                        7th revision
@@ -34,7 +34,7 @@
    If none are define, we use last posix version
 
    We simplify this diagram by this one:
-         
+
       C89 _ C99 _ UNX  _ XOPN
                 \ IEEE _ BSD
                        \ SVID

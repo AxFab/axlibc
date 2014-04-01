@@ -1,7 +1,7 @@
 
 #define LOWER 0x20
 
-static const char const* digits = 
+static const char const* digits =
   "0123456789abcdefghijklmnopqrstuvwxyz";
 
 
@@ -164,7 +164,7 @@ unsigned long long strtoull (const char * str, char ** endptr, int base)
 }
 
 // ---------------------------------------------------------------------------
-uintmax_t _strtox(const char * str, char ** endptr, int base, char sign) 
+uintmax_t _strtox(const char * str, char ** endptr, int base, char sign)
 {
   uintmax_t value = 0;
 
@@ -176,7 +176,7 @@ uintmax_t _strtox(const char * str, char ** endptr, int base, char sign)
     str++;
   }
 
-  if (base == 0) { 
+  if (base == 0) {
     if (str[0] != '0') {
       base = 10;
 

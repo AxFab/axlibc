@@ -2,9 +2,9 @@
 #define TIME_H__
 
 /** @file time.h
- * @brief time types 
+ * @brief time types
  * @version C89, C99, IEEE, Unix95, Unix98, POSIX, XSI
- * 
+ *
  */
 
 #include <stddef.h>
@@ -16,15 +16,15 @@ __AXLIBC_BEG
 /** Number of clock ticks per second returned by the times() function. */
 #define CLK_TCK
 
-/** A number used to convert the value returned by the clock() function into 
+/** A number used to convert the value returned by the clock() function into
  seconds. */
 #define CLOCKS_PER_SEC  1000000
 
-/** The identifier of the CPU-time clock associated with the process making a 
+/** The identifier of the CPU-time clock associated with the process making a
  * clock() or timer*() function call. */
 #define CLOCK_PROCESS_CPUTIME_ID  2
 
-/** The identifier of the CPU-time clock associated with the thread making a 
+/** The identifier of the CPU-time clock associated with the thread making a
  * clock() or timer*() function call. */
 #define CLOCK_THREAD_CPUTIME_ID   3
 
@@ -36,8 +36,8 @@ __AXLIBC_BEG
 
 /** The identifier for the system-wide monotonic clock, which is defined as a clock whose value cannot be set via clock_settime() and which cannot have backward clock jumps. The maximum possible clock jump shall be implementation-defined. */
 #define CLOCK_MONOTONIC           5
-    
- 
+
+
 
 // ===========================================================================
 struct tm
@@ -61,7 +61,7 @@ struct timespec
 
 int tm_isdst;
 
-struct itimerspec 
+struct itimerspec
 {
   struct timespec  it_interval  /**< Timer period. */
   struct timespec  it_value     /**< Timer expiration. */

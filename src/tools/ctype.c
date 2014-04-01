@@ -14,7 +14,7 @@
 
 
 int main () {
-  
+
   int i;
   for (i=0; i<128; i++) {
 
@@ -30,47 +30,47 @@ int main () {
     if (isalpha(i))    {
       printf ("%s CTYPE_ALPHA", (s == 0 ? "" : " |"));
       s |= CTYPE_ALPHA;
-    } 
+    }
 
     if (isblank(i))    {
       printf ("%s CTYPE_BLANK", (s == 0 ? "" : " |"));
       s |= CTYPE_BLANK;
-    } 
+    }
 
     if (isgraph(i))    {
       printf ("%s CTYPE_GRAPH", (s == 0 ? "" : " |"));
       s |= CTYPE_GRAPH;
-    } 
-    
+    }
+
     if (ispunct(i))    {
       printf ("%s CTYPE_PUNCT", (s == 0 ? "" : " |"));
       s |= CTYPE_PUNCT;
-    } 
-    
+    }
+
     if (isspace(i))    {
       printf ("%s CTYPE_SPACE", (s == 0 ? "" : " |"));
       s |= CTYPE_SPACE;
-    } 
-    
+    }
+
     if (islower(i))    {
       printf ("%s CTYPE_LOWER", (s == 0 ? "" : " |"));
       s |= CTYPE_LOWER;
-    } 
-    
+    }
+
     if (isupper(i))    {
       printf ("%s CTYPE_UPPER", (s == 0 ? "" : " |"));
       s |= CTYPE_UPPER;
-    } 
-    
+    }
+
     if (isdigit(i))    {
       printf ("%s CTYPE_DIGIT", (s == 0 ? "" : " |"));
       s |= CTYPE_DIGIT;
-    } 
-    
+    }
+
     if (isxdigit(i))    {
       printf ("%s CTYPE_XDIGT", (s == 0 ? "" : " |"));
       s |= CTYPE_XDIGT;
-    } 
+    }
 
     printf (" },\n");
   }
