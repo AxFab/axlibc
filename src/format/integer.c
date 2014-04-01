@@ -5,9 +5,176 @@ static const char const* digits =
   "0123456789abcdefghijklmnopqrstuvwxyz";
 
 
-long strtol (const char* str, char** ptr, int base)
+// ---------------------------------------------------------------------------
+int atoi (const char* str)
 {
-  int value = 0;
+  char sign;
+  uintmax_t value = _strtox(str, NULL, 10, &sign);
+  return (int) (sign == '+') ? value : -value;
+}
+
+// ---------------------------------------------------------------------------
+long atol (const char* str)
+{
+  char sign;
+  uintmax_t value = _strtox(str, NULL, 10, &sign);
+  return (long) (sign == '+') ? value : -value;
+}
+
+// ---------------------------------------------------------------------------
+long long atoll (const char* str)
+{
+  char sign;
+  uintmax_t value = _strtox(str, NULL, 10, &sign);
+  return (long long) (sign == '+') ? value : -value;
+}
+
+
+// ---------------------------------------------------------------------------
+long strtol (const char * str, char ** endptr, int base)
+{
+  char sign;
+  uintmax_t value;
+
+  if (base != 0 && (base < 2 || base > 36)) {
+    return 0;
+  }
+
+  value = _strtox(str, endptr, base, &sign);
+
+  if (sign == 'o') {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  if (sign == '+') {
+    if (value > LONG_MAX) {
+      __seterrno (EOVERFLOW);
+      if (endptr) (*endptr) = str;
+      return 0;
+    }
+
+    return (long) value;
+
+  } else {
+
+    if (value > -LONG_MIN) {
+      __seterrno (EOVERFLOW);
+      if (endptr) (*endptr) = str;
+      return 0;
+    }
+
+    return (long) -value;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+long long strtoll (const char * str, char ** endptr, int base)
+{
+  char sign;
+  uintmax_t value;
+
+  if (base != 0 && (base < 2 || base > 36)) {
+    return 0;
+  }
+
+  value = _strtox(str, endptr, base, &sign);
+
+  if (sign == 'o') {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  if (sign == '+') {
+    if (value > LLONG_MAX) {
+      __seterrno (EOVERFLOW);
+      if (endptr) (*endptr) = str;
+      return 0;
+    }
+
+    return (long long) value;
+
+  } else {
+
+    if (value > -LLONG_MIN) {
+      __seterrno (EOVERFLOW);
+      if (endptr) (*endptr) = str;
+      return 0;
+    }
+
+    return (long long) -value;
+  }
+}
+
+// ---------------------------------------------------------------------------
+unsigned long strtoul (const char * str, char ** endptr, int base)
+{
+  char sign;
+  uintmax_t value;
+
+  if (base != 0 && (base < 2 || base > 36)) {
+    return 0;
+  }
+
+  value = _strtox(str, endptr, base, &sign);
+
+  if (sign == 'o') {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  if (value > ULONG_MAX) {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  return (unsigned long) (sign == '+' ? value : -value);
+}
+
+// ---------------------------------------------------------------------------
+unsigned long long strtoull (const char * str, char ** endptr, int base)
+{
+  char sign;
+  uintmax_t value;
+
+  if (base != 0 && (base < 2 || base > 36)) {
+    return 0;
+  }
+
+  value = _strtox(str, endptr, base, &sign);
+
+  if (sign == 'o') {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  if (value > ULLONG_MAX) {
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = str;
+    return 0;
+  }
+
+  return (unsigned long long) (sign == '+' ? value : -value);
+}
+
+// ---------------------------------------------------------------------------
+uintmax_t _strtox(const char * str, char ** endptr, int base, char sign) 
+{
+  uintmax_t value = 0;
+
+  if (ptr) (*ptr) = (char*)str;
+  while (isspace(*str)) str++;
+
+  sign = *str == '-' ?  '-' : '+';
+  if (*str == '-' || *str == '+') {
+    str++;
+  }
 
   if (base == 0) { 
     if (str[0] != '0') {
@@ -21,6 +188,11 @@ long strtol (const char* str, char** ptr, int base)
       base = 8;
       str++;
     }
+  }
+
+  if (*str < '0' || (*str | LOWER) >= digits[base]) {
+    // TODO errno !?
+    return 0;
   }
 
   for (;;str++) {
@@ -40,3 +212,4 @@ long strtol (const char* str, char** ptr, int base)
   if (ptr) (*ptr) = (char*)str;
   return value;
 }
+
