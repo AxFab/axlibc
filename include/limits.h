@@ -1,6 +1,27 @@
 #ifndef LIMITS_H__
 #define LIMITS_H__
 
+/** @file limits.h
+ * @brief implementation-dependent constants 
+ * @version C89, C99, IEEE, Unix95, Unix98, POSIX, XSI
+ * 
+ * The <limits.h> header defines various symbolic names. Different categories 
+ * of names are described below.
+ * The names represent various limits on resources that the system imposes on 
+ * applications.
+ * Implementations may choose any appropriate value for each limit, provided it 
+ * is not more restrictive than the Minimum Acceptable Values listed below. 
+ * Symbolic constant names beginning with _POSIX may be found in <unistd.h>.
+ * Applications should not assume any particular value for a limit. To achieve
+ * maximum portability, an application should not require more resource than 
+ * the Minimum Acceptable Value quantity. However, an application wishing to 
+ * avail itself of the full amount of a resource available on an 
+ * implementation may make use of the value given in <limits.h> on that 
+ * particular system, by using the symbolic names listed below. It should be 
+ * noted, however, that many of the listed limits are not invariant, and at run 
+ * time, the value of the limit may differ from those given in this header.
+ */
+
 #include <features.h>
 #include <datamodel.h>
 
@@ -86,7 +107,7 @@
 
 
 /* ===========================================================================
-			Implementation Defined Values
+ Run-time Invariant Values (Possibly Indeterminate)
 =========================================================================== */
 #define AIO_LISTIO_MAX          _POSIX_AIO_LISTIO_MAX       /*< The number of I/O operations that can be specified in a list I/O call.  */
 #define AIO_MAX                 _POSIX_AIO_MAX              /*< The number of outstanding asynchronous I/O operations.  */
@@ -125,6 +146,70 @@
 #define TRACE_USER_EVENT_MAX    _POSIX_TRACE_USER_EVENT_MAX /*< The number of user trace event type identifiers that may simultaneously exist in a traced process, including the predefined user trace event POSIX_TRACE_UNNAMED_USER_EVENT.  */
 #define TTY_NAME_MAX            _POSIX_TTY_NAME_MAX         /*< The size of the storage required for a terminal device name, in bytes, including the terminating null.  */
 #define TZNAME_MAX              _POSIX_TZNAME_MAX           /*< Maximum number of bytes supported for the name of a timezone (not of the TZ variable).  */
+
+/* ===========================================================================
+ Pathname Variable Values
+==============================================================================
+  The values in the following list may be constants within an implementation or 
+  may vary from one pathname to another. For example, file systems or 
+  directories may have different characteristics. 
+*/
+
+
+/** Minimum number of bits needed to represent, as a signed integer value, the 
+ * maximum size of a regular file allowed in the specified directory. 
+ * @note Minimum: 32
+ */
+#define FILESIZEBITS      48
+
+/** Maximum number of links to a single file. 
+ * @note Minimum: _POSIX_LINK_MAX
+ */
+#define LINK_MAX          _POSIX_LINK_MAX
+
+/** Maximum number of bytes in a terminal canonical input line.
+ * @note Minimum: _POSIX_MAX_CANON
+ */
+#define MAX_CANON         _POSIX_MAX_CANON  
+
+/** Minimum number of bytes for which space will be available in a terminal 
+ * input queue; therefore, the maximum number of bytes a portable application 
+ * may require to be typed as input before reading them.
+ * @note Minimum: _POSIX_MAX_INPUT
+ */
+#define MAX_INPUT         _POSIX_MAX_INPUT
+
+/** Maximum number of bytes in a filename (not including terminating null).
+ * @note Minimum: _POSIX_NAME_MAX
+ */
+#define NAME_MAX          _POSIX_NAME_MAX
+
+/** Maximum number of bytes in a pathname, including the terminating null 
+ * character.
+ * @note Minimum: _POSIX_PATH_MAX
+ */
+#define PATH_MAX          _POSIX_PATH_MAX
+
+/** Maximum number of bytes that is guaranteed to be atomic when writing to a 
+ * pipe.
+ * @note Minimum: _POSIX_PIPE_BUF
+ */
+#define PIPE_BUF          _POSIX_PIPE_BUF
+
+
+/* ===========================================================================
+  Run-time Increasable Values
+==============================================================================
+  The magnitude limitations in the following list will be fixed by specific 
+  implementations. An application should assume that the value supplied by 
+  <limits.h> in a specific implementation is the minimum that pertains whenever 
+  the application is run under that implementation. A specific instance of a 
+  specific implementation may increase the value relative to that supplied by 
+  <limits.h> for that implementation. The actual value supported by a specific 
+  instance will be provided by the sysconf() function. 
+*/
+
+
 #define BC_BASE_MAX             _POSIX2_BC_BASE_MAX         /*< Maximum obase values allowed by the bc utility.  */
 #define BC_DIM_MAX              _POSIX2_BC_DIM_MAX          /*< Maximum number of elements permitted in an array by the bc utility.  */
 #define BC_SCALE_MAX            _POSIX2_BC_SCALE_MAX        /*< Maximum scale value allowed by the bc utility.  */
@@ -138,16 +223,80 @@
 #define AME_MAX                 _XOPEN_NAME_MAX             /*< Maximum number of bytes in a filename (not including the terminating null).  */
 #define ATH_MAX                 _XOPEN_PATH_MAX             /*< Maximum number of bytes in a pathname.  */
 
+/* ===========================================================================
+ Numerical Limits
+==============================================================================
+  The values in the following lists are defined in <limits.h> and will be 
+  constant expressions suitable for use in #if preprocessing directives. 
+  Moreover, except for CHAR_BIT, DBL_DIG, DBL_MAX, FLT_DIG, FLT_MAX, LONG_BIT,
+  WORD_BIT and MB_LEN_MAX, the symbolic names will be defined as expressions of 
+  the correct type.
+  If the value of an object of type char is treated as a signed integer when 
+  used in an expression, the value of CHAR_MIN is the same as that of SCHAR_MIN 
+  and the value of CHAR_MAX is the same as that of SCHAR_MAX. Otherwise, the 
+  value of CHAR_MIN is 0 and the value of CHAR_MAX is the same as that of 
+  UCHAR_MAX. 
+*/
 
 
-#define NL_ARGMAX	  9			/*< Maximum value of digit in calls to the printf() and scanf() functions. */
-#define NL_LANGMAX    14  		/*< Maximum number of bytes in a LANG name. */
-#define NL_MSGMAX     32767 	/*< Maximum message number. */
-#define NL_NMAX    	  1  		/*< Maximum number of bytes in an N-to-1 collation mapping. */
-#define NL_SETMAX     255 		/*< Maximum set number. */
-#define NL_TEXTMAX    _POSIX2_LINE_MAX /*< Maximum number of bytes in a message string. */
-#define NZERO         20        /*< Default process priority. */
 
+
+/* ===========================================================================
+ Other Invariant Values
+==============================================================================
+  The following constants are defined on all systems in <limits.h>. 
+*/
+
+
+/** Maximum number of bytes in a character class name.
+ * @note Minimum: 14
+ */
+#define CHARCLASS_NAME_MAX    14
+
+/** Maximum value of digit in calls to the printf() and scanf() functions.
+ * @note Minimum: 9
+ */
+#define NL_ARGMAX             9
+
+/** Maximum number of bytes in a LANG name.
+ * @note Minimum: 14
+ */
+#define NL_LANGMAX            14
+
+/** Maximum message number.
+ * @note Minimum: 32767
+ */
+#define NL_MSGMAX             32767
+
+/** Maximum number of bytes in an N-to-1 collation mapping.
+ * @note Minimum: *
+ */
+#define NL_NMAX               1
+
+/** Maximum set number.
+ * @note Minimum: 255
+ */
+#define NL_SETMAX             255
+
+/** Maximum number of bytes in a message string.
+ * @note Minimum: _POSIX2_LINE_MAX 
+ */
+#define NL_TEXTMAX            _POSIX2_LINE_MAX 
+
+/** Default process priority.
+ * @note Minimum: 20
+ */
+#define NZERO                 20
+
+/** Minimum number of unique pathnames generated by tmpnam(). Maximum number of 
+ * times an application can call tmpnam() reliably. 
+ * @deprecated
+ * @note Minimum: 10000
+ */
+#define TMP_MAX               SSIZE_MAX
+
+
+/* ========================================================================= */
 
 
 /*

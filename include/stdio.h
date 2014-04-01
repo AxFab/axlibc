@@ -1,6 +1,13 @@
 #ifndef STDIO_H__
 #define STDIO_H__
-/* ISO C99 Standard: 7.19 Input/output  <stdio.h> */
+
+/** @file stdio.h
+ * @brief standard buffered input/output 
+ * @version C89, C99, IEEE, Unix95, Unix98, POSIX, XSI
+ * 
+ * The <stdio.h> header defines the following
+ */
+
 #include <stddef.h>
 #include <stdarg.h>
 #include <limits.h>
@@ -11,7 +18,11 @@ __AXLIBC_BEG
 // Config --------------------------------------------------------------------
 #define BUFSIZ  65536 /**< Size of <stdio.h> buffers. */
 
+/** Maximum size in bytes of the longest filename string that the 
+ * implementation guarantees can be opened. */
 #define FILENAME_MAX 260
+
+
 #define FOPEN_MAX 20
 #define TMP_MAX 32767
 
@@ -33,6 +44,7 @@ __AXLIBC_BEG
 
 
 #define EOF       (-1)        /**< End of file character. */
+#define EOL       "\n"        /**< End of line character. */
 
 #define P_tmpdir  "/tmp"      /**< Default path prefix for 'mkstemp'. */
 

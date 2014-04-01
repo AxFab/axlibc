@@ -1,4 +1,18 @@
+#ifndef CTYPE_H__
+#define CTYPE_H__
+
+/** @file ctype.h
+ * @brief character types 
+ * @version C89, C99, Unix95, Unix98, POSIX, XSI
+ * 
+ * The <ctype.h> header declares the following as functions and may also define 
+ * them as macros. Function prototypes must be provided for use with an ISO 
+ * C compiler. 
+ */
+
 #include <stdint.h>
+
+__AXLIBC_BEG
 
 #define CTYPE_ALPHA     0x001
 #define CTYPE_BLANK     0x002
@@ -61,3 +75,6 @@ int isxdigit_l (int c, locale_t locale);  /**< checks for hexadecimal digits */
 int tolower_l (int c, locale_t locale);   /** convert to lowercase */
 int toupper_l (int c, locale_t locale);   /** convert to uppercase */
 
+__AXLIBC_END
+
+#endif /* CTYPE_H__ */

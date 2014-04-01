@@ -1,41 +1,49 @@
 #ifndef STDDEF_H__
 #define STDDEF_H__
 
+/** @file stddef.h
+ * @brief standard type definitions 
+ * @version C89, C99, IEEE, Unix95, Unix98, POSIX, XSI
+ * 
+ * The <stddef.h> header defines the following: 
+ */
+
 #include <features.h>
 #include <datamodel.h>
 
 __AXLIBC_BEG
 
-#define NULL    0
-#define EOF    (-1)
-#define EOL    '\n'
-#define LOWER_CASE    0x20		/*< Define the flag/diff between lower case and upercase. */
+/** Null pointer constant. */
+#define NULL    0             
+
+/** Integral constant expression of type size_t, the value of which is the
+ * offset in bytes to the structure member (member-designator), from the
+ * beginning of its structure (type). 
+ */
+#define offsetof(s,m)   (size_t)&(((s *)0)->m)
 
 
 #if __POINTER_BITS == __INT_BITS
-  typedef unsigned int size_t;	/*< Unsigned integral type (type ) */
-  typedef int ptrdiff_t;     /*< Result of pointer subtraction (type ) */
+  typedef unsigned int size_t;	/**< Unsigned integral type (type ) */
+  typedef int ptrdiff_t;     /**< Result of pointer subtraction (type ) */
 #elif __POINTER_BITS == __LONG_BITS
-  typedef unsigned long size_t;  /*< Unsigned integral type (type ) */
-  typedef long ptrdiff_t;     /*< Result of pointer subtraction (type ) */
+  typedef unsigned long size_t;  /**< Unsigned integral type (type ) */
+  typedef long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
 #else
-  typedef unsigned long long size_t;  /*< Unsigned integral type (type ) */
-  typedef long long ptrdiff_t;     /*< Result of pointer subtraction (type ) */
+  typedef unsigned long long size_t;  /**< Unsigned integral type (type ) */
+  typedef long long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
 #endif
 
 
+/** Integral type whose range of values can represent distinct wide-character 
+ * codes for all members of the largest character set specified among the 
+ * locales supported by the compilation environment: the null character has the 
+ * code value 0 and each member of the Portable Character Set has a code value 
+ * equal to its value when used as the lone character in an integer character 
+ * constant. 
+ */
+typedef int wchar_t;
 
-// typedef short wchar_t; // TODO wide char and really wide char, try to correct unicode approach
-typedef size_t fpos_t;
-typedef long int wchar_t;
-
-
-typedef long max_align_t;	/*< Type with widest scalar alignment (type ) */
-
-#define offsetof(s,m)   (size_t)&(((s *)0)->m)
-
-//typedef unsigned int time_t;
-// typedef long pid_t;
 
 __AXLIBC_END
 

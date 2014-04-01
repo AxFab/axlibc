@@ -69,6 +69,14 @@ alloc_inc = include/
 alloc_cflags =  $(std_$(mode)_cflags) -D__C99
 $(eval $(call PROGRAM,alloc))
 
+
+# Target: Program  format
+unix_src = tools/unix_tables.c
+unix_inc = 
+unix_cflags =  $(std_$(mode)_cflags) 
+$(eval $(call PROGRAM,unix))
+
+
 # ===========================================================================
 
 -include $(MAKE_SCRIPTS_DIR)/utils.mk
