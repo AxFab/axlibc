@@ -1,11 +1,11 @@
 #include <string.h>
 
 // Search a string for a character
-char* strchr ( const char* string, int ch )
+char* strchr (const char* string, int ch)
 {
-    while ( *string && *string != ( char ) ch ) {
-        if ( *string == ( char ) ch ) {
-            return ( char* ) string;
+    while (*string) {
+        if (*string == (char) ch) {
+            return (char*) string;
         }
 
         string++;
