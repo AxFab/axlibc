@@ -1,34 +1,137 @@
 #include <stdint.h>
-#include <prv/format.h>
+#include <format.h>
 
 typedef struct xFormat xFormat_t;
 struct xFormat 
 {
-  int     _type;
-  int     _size;
+  union {
+    struct {
+      char     _size;
+      char     _type;
+    };
+    uint16_t   _func;
+  };
   int     (*_pc)(int c, void* d);
   void*   _data;
   int     _cnt;
   int     _width;
+  int     _precision;
 };
 
-#define F_DECIMAL_SIGNED  1
-#define F_DECIMAL_UNSIGNED  2
-#define F_OCTAL_SIGNED  3
-#define F_HEXADECIMAL_UNSIGNED  4
-#define F_STRING  5
-#define F_CHAR  6
+#define F_DECIMAL_SIGNED  1   // d i
+#define F_DECIMAL_UNSIGNED  2 // u o
+#define F_OCTAL_SIGNED  3 // o
+#define F_HEXADECIMAL_UNSIGNED  4 // x X
+#define F_STRING  5 // s
+#define F_CHAR  6 // c
+#define F_POINTER  7 // p
+#define F_COUNTER  8 // n
+#define F_DOUBLE 9 // f F e E g G a A (need details)
+
+#define F_SZ_INT 0
+#define F_SZ_CHAR 1 // hh
+#define F_SZ_SHORT 2 // h
+#define F_SZ_LONG 3 // l
+#define F_SZ_LLONG 4 // ll
+#define F_SZ_INTMAX 5 // j
+#define F_SZ_INTSIZ 6 // z
+#define F_SZ_INTPTR 7 // t
+#define F_SZ_DECIMAL 8 // L
+
+#define F_RN_SGINT    (F_SZ_INT | (F_DECIMAL_SIGNED << 8)) // %d - %i
+#define F_RN_SGCHAR   (F_SZ_CHAR | (F_DECIMAL_SIGNED << 8)) // %hhd - %hhi
+#define F_RN_SGSHORT  (F_SZ_SHORT | (F_DECIMAL_SIGNED << 8)) // %hd - %hi
+#define F_RN_SGLONG   (F_SZ_SHORT | (F_DECIMAL_SIGNED << 8)) // %hd - %hi
+
 
 int getFormat (const char * str, xFormat_t* frmt, const char **ptr)
 {
+  // FLAGS (- + ' ' # 0)
   switch (str[0]) {
     case '-':
+      // ALIGN LEFT
+      str++;
+      break;
+
+    case '+':
+      // FORCE SIGN +
+      str++;
+      break;
+
+    case ' ':
+      // FORCE SIGN :space:
+      str++;
+      break;
+
+    case '#':
+      // ADD DECORATION (0 0x 0X or deciaml point)
+      str++;
+      break;
+
+    case '0':
+      // PADDING '0'
       str++;
       break;
   }
 
-  frmt->_width = strtol(str, (char**)&str, 10);
+  // WIDTH (num *)
+  if (str[0] == '*') {
+  } else 
+    frmt->_width = strtol(str, (char**)&str, 10);
 
+  // .PRECISION (num *)
+  if (str[0] == '.') {
+    str++;
+    frmt->_precision = strtol(str, (char**)&str, 10);
+  }
+
+  // LENGTH (hh h l ll j z t L)
+  frmt->_size = F_SZ_INT;
+  switch (str[0]) {
+    case 'h':
+      if (str[1] == 'h') { 
+        frmt->_size = F_SZ_CHAR;
+        str += 2;
+      } else {
+        frmt->_size = F_SZ_SHORT;
+        str++;
+      }
+      break;
+
+    case 'l':
+      if (str[1] == 'l') { 
+        frmt->_size = F_SZ_LLONG;
+        str += 2;
+      } else {
+        frmt->_size = F_SZ_LONG;
+        str++;
+      }
+      break;
+
+    case 'j':
+      frmt->_size = F_SZ_INTMAX;
+      str++;
+      break;
+
+    case 'z':
+      frmt->_size = F_SZ_INTSIZ;
+      str++;
+      break;
+
+    case 't':
+      frmt->_size = F_SZ_INTPTR;
+      str++;
+      break;
+
+    case 'L':
+      frmt->_size = F_SZ_DECIMAL;
+      str++;
+      break;
+
+    default: break;
+  }
+
+  // SPECIFIER (d i u o x X f F e E g G a A c s P n)
   frmt->_type = 0;
   switch (str[0]) {
     case 'd':
@@ -49,11 +152,6 @@ int getFormat (const char * str, xFormat_t* frmt, const char **ptr)
       frmt->_type = F_HEXADECIMAL_UNSIGNED; // hexadecimal unsigned 
       break;
 
-    case 'e':
-    case 'E': // Use UPERCASE !
-      frmt->_type = 1; // double scientific 
-      break;
-
     case 's':
       frmt->_type = F_STRING; // string 
       break;
@@ -62,15 +160,24 @@ int getFormat (const char * str, xFormat_t* frmt, const char **ptr)
       frmt->_type = F_CHAR;
       break;
 
+    case 'p':
+      frmt->_type = F_POINTER;
+      break;
+
+    case 'n':
+      frmt->_type = F_COUNTER;
+      break;
+
+    case 'e':
+    case 'E': // Use UPERCASE !
+      frmt->_type = F_DOUBLE; // double scientific 
+      break;
+
     default: break;
   }
 
   if (frmt->_type != 0) str++;
-
-
-  if (ptr)
-    *ptr = str;
-
+  if (ptr) *ptr = str;
   return 0;
 }
 

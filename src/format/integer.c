@@ -1,9 +1,64 @@
+#include <stdint.h>
+#include <limits.h>
+#include <stddef.h>
+#include <ctype.h>
+#include <errno.h>
 
 #define LOWER 0x20
 
 static const char const* digits =
   "0123456789abcdefghijklmnopqrstuvwxyz";
 
+
+// ---------------------------------------------------------------------------
+static uintmax_t _strtox(const char * str, char ** endptr, int base, char* sign)
+{
+  uintmax_t value = 0;
+
+  if (endptr) (*endptr) = (char*)str;
+  while (isspace(*str)) str++;
+
+  (*sign) = *str == '-' ?  '-' : '+';
+  if (*str == '-' || *str == '+') {
+    str++;
+  }
+
+  if (base == 0) {
+    if (str[0] != '0') {
+      base = 10;
+
+    } else if ((str[1] | LOWER) == 'x') {
+      base = 16;
+      str += 2;
+
+    } else {
+      base = 8;
+      str++;
+    }
+  }
+
+  if (*str < '0' || (*str | LOWER) >= digits[base]) {
+    // TODO errno !?
+    return 0;
+  }
+
+  for (;;str++) {
+
+    if (*str < '0' || (*str | LOWER) >= digits[base])
+      break;
+
+    value *= base;
+
+    if (*str <= '9')
+      value += (*str) - '0';
+    else
+      value += ((*str) | LOWER) - 'a' + 10;
+
+  }
+
+  if (endptr) (*endptr) = (char*)str;
+  return value;
+}
 
 // ---------------------------------------------------------------------------
 int atoi (const char* str)
@@ -43,14 +98,14 @@ long strtol (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LONG_MAX) {
-      __seterrno (EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = str;
       return 0;
     }
@@ -60,7 +115,7 @@ long strtol (const char * str, char ** endptr, int base)
   } else {
 
     if (value > -LONG_MIN) {
-      __seterrno (EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = str;
       return 0;
     }
@@ -83,14 +138,14 @@ long long strtoll (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LLONG_MAX) {
-      __seterrno (EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = str;
       return 0;
     }
@@ -100,7 +155,7 @@ long long strtoll (const char * str, char ** endptr, int base)
   } else {
 
     if (value > -LLONG_MIN) {
-      __seterrno (EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = str;
       return 0;
     }
@@ -122,13 +177,13 @@ unsigned long strtoul (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
 
   if (value > ULONG_MAX) {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
@@ -149,67 +204,17 @@ unsigned long long strtoull (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
 
   if (value > ULLONG_MAX) {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = str;
     return 0;
   }
 
   return (unsigned long long) (sign == '+' ? value : -value);
-}
-
-// ---------------------------------------------------------------------------
-uintmax_t _strtox(const char * str, char ** endptr, int base, char sign)
-{
-  uintmax_t value = 0;
-
-  if (ptr) (*ptr) = (char*)str;
-  while (isspace(*str)) str++;
-
-  sign = *str == '-' ?  '-' : '+';
-  if (*str == '-' || *str == '+') {
-    str++;
-  }
-
-  if (base == 0) {
-    if (str[0] != '0') {
-      base = 10;
-
-    } else if ((str[1] | LOWER) == 'x') {
-      base = 16;
-      str += 2;
-
-    } else {
-      base = 8;
-      str++;
-    }
-  }
-
-  if (*str < '0' || (*str | LOWER) >= digits[base]) {
-    // TODO errno !?
-    return 0;
-  }
-
-  for (;;str++) {
-
-    if (*str < '0' || (*str | LOWER) >= digits[base])
-      break;
-
-    value *= base;
-
-    if (*str <= '9')
-      value += (*str) - '0';
-    else
-      value += ((*str) | LOWER) - 'a' + 10;
-
-  }
-
-  if (ptr) (*ptr) = (char*)str;
-  return value;
 }
 
