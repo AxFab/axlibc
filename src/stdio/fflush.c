@@ -1,4 +1,4 @@
-#include <prv/stream.h>
+#include <stream.h>
 
 // ---------------------------------------------------------------------------
 int fill_cache (FILE* stream)

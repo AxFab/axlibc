@@ -214,7 +214,7 @@
 #define BC_DIM_MAX              _POSIX2_BC_DIM_MAX          /*< Maximum number of elements permitted in an array by the bc utility.  */
 #define BC_SCALE_MAX            _POSIX2_BC_SCALE_MAX        /*< Maximum scale value allowed by the bc utility.  */
 #define BC_STRING_MAX           _POSIX2_BC_STRING_MAX       /*< Maximum length of a string constant accepted by the bc utility.  */
-#define CHARCLASS_NAME_MAX      _POSIX2_CHARCLASS_NAME_MAX  /*< Maximum number of bytes in a character class name.  */
+// #define CHARCLASS_NAME_MAX      _POSIX2_CHARCLASS_NAME_MAX  /*< Maximum number of bytes in a character class name.  */
 #define COLL_WEIGHTS_MAX        _POSIX2_COLL_WEIGHTS_MAX    /*< Maximum number of weights that can be assigned to an entry of the LC_COLLATE order keyword in the locale definition file; see Locale.  */
 #define EXPR_NEST_MAX           _POSIX2_EXPR_NEST_MAX       /*< Maximum number of expressions that can be nested within parentheses by the expr utility.  */
 #define LINE_MAX                _POSIX2_LINE_MAX            /*< Unless otherwise noted, the maximum length, in bytes, of a utility's input line (either standard input or another file), when the utility is described as processing text files. The length includes room for the trailing <newline>.  */

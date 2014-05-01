@@ -24,7 +24,7 @@ __AXLIBC_BEG
 
 
 #define FOPEN_MAX 20
-#define TMP_MAX 32767
+// #define TMP_MAX 32767
 
 // ===========================================================================
 // Constants -----------------------------------------------------------------
@@ -41,7 +41,7 @@ __AXLIBC_BEG
 #define stdin   stdin
 #define stderr  stderr
 
-
+typedef signed long fpos_t;
 
 #define EOF       (-1)        /**< End of file character. */
 #define EOL       "\n"        /**< End of line character. */

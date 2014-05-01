@@ -1,5 +1,5 @@
 #include <stdlib.h> // abort
-#include <prv/stream.h>
+#include <stream.h>
 
 
 // ---------------------------------------------------------------------------

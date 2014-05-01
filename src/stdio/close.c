@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <prv/stream.h>
+#include <stream.h>
 
 // ---------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ int fclose (FILE* stream)
   /* Checking that we know this file */
   while (stream == fp) {
     if (fp == NULL) {
-      __seterrno (EINVAL);
+      errno = EINVAL;
       return EOF;
     }
 

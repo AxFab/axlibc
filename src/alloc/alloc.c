@@ -1,4 +1,4 @@
-#include <prv/alloc.h>
+#include <alloc.h>
 #include <stdint.h>
 
 int bpw2 (unsigned long );

@@ -1,4 +1,4 @@
-#include <prv/stream.h>
+#include <stream.h>
 
 void mtx_destroy(axMutex_t *mutex)
 {

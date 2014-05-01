@@ -38,7 +38,7 @@ libaxc_src = \
 		$(patsubst src/%,%,$(wildcard src/stdio/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/stdlib/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/string/*.c)) 
-libaxc_inc = include/
+libaxc_inc = include/ internal/
 libaxc_cflags =  $(std_$(mode)_cflags) -nostdinc -D__C99
 libaxc_lflags = -nostdlib
 $(eval $(call LIBRARY,libaxc))
@@ -50,7 +50,7 @@ libAxRaw_src = \
 		$(patsubst src/%,%,$(wildcard src/alloc/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/string/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/format/*.c)) 
-libAxRaw_inc = include/
+libAxRaw_inc = include/ internal/
 libAxRaw_cflags =  $(std_$(mode)_cflags) -nostdinc -D__EX
 libAxRaw_lflags = -nostdlib
 $(eval $(call LIBRARY,libAxRaw))
@@ -59,13 +59,21 @@ $(eval $(call LIBRARY,libAxRaw))
 
 # Target: Program  format
 format_src =  $(patsubst src/%,%,$(wildcard src/format/*.c)) tests/format.c
-format_inc = include/
-format_cflags =  $(std_$(mode)_cflags) -D__C99
+#format_src =  tests/format.c
+format_inc = include/ internal/
+format_cflags =  $(std_$(mode)_cflags) -D__C99 -Wno-format
 $(eval $(call PROGRAM,format))
 
 
+# Target: Program  format
+files_src =  tests/files.c
+files_inc = include/ internal/
+files_cflags =  $(std_$(mode)_cflags) -D__C99 -Wno-format
+$(eval $(call PROGRAM,files))
+
+
 alloc_src =  $(patsubst src/%,%,$(wildcard src/alloc/*.c)) tests/alloc.c
-alloc_inc = include/
+alloc_inc = include/ internal/
 alloc_cflags =  $(std_$(mode)_cflags) -D__C99
 $(eval $(call PROGRAM,alloc))
 

@@ -1,4 +1,4 @@
-#include <prv/stream.h>
+#include <stream.h>
 #include <string.h>
 
 void perror (const char* str)

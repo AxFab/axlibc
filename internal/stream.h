@@ -73,8 +73,6 @@ int fill_cache (FILE* stream);
 int flush_cache (FILE* stream);
 
 
-#define __seterrno(e) (errno = (e))
-
 extern FILE* OFP_HEAD;
 
 

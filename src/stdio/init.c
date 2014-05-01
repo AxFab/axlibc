@@ -1,4 +1,4 @@
-#include <prv/stream.h>
+#include <stream.h>
 
 int errno;
 FILE* stdout;
