@@ -2,7 +2,7 @@
 #include <limits.h>
 #include <stddef.h>
 #include <ctype.h>
-#include <errno.h>
+#include <error.h>
 
 #define LOWER 0x20
 
@@ -98,15 +98,15 @@ long strtol (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno (EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LONG_MAX) {
-      errno = EOVERFLOW;
-      if (endptr) (*endptr) = str;
+      __seterrno(EOVERFLOW);
+      if (endptr) (*endptr) = (char*)str;
       return 0;
     }
 
@@ -114,9 +114,9 @@ long strtol (const char * str, char ** endptr, int base)
 
   } else {
 
-    if (value > -LONG_MIN) {
-      errno = EOVERFLOW;
-      if (endptr) (*endptr) = str;
+    if (value > ((uintmax_t)-LONG_MIN)) {
+      __seterrno(EOVERFLOW);
+      if (endptr) (*endptr) = (char*)str;
       return 0;
     }
 
@@ -138,15 +138,15 @@ long long strtoll (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno(EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LLONG_MAX) {
-      errno = EOVERFLOW;
-      if (endptr) (*endptr) = str;
+      __seterrno(EOVERFLOW);
+      if (endptr) (*endptr) = (char*)str;
       return 0;
     }
 
@@ -154,9 +154,9 @@ long long strtoll (const char * str, char ** endptr, int base)
 
   } else {
 
-    if (value > -LLONG_MIN) {
-      errno = EOVERFLOW;
-      if (endptr) (*endptr) = str;
+    if (value > (uintmax_t)(-LLONG_MIN)) {
+      __seterrno(EOVERFLOW);
+      if (endptr) (*endptr) = (char*)str;
       return 0;
     }
 
@@ -177,14 +177,14 @@ unsigned long strtoul (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno(EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (value > ULONG_MAX) {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno(EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
@@ -204,14 +204,14 @@ unsigned long long strtoull (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno(EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (value > ULLONG_MAX) {
-    errno = EOVERFLOW;
-    if (endptr) (*endptr) = str;
+    __seterrno(EOVERFLOW);
+    if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 

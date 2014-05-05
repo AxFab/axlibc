@@ -1,4 +1,5 @@
 #include <stream.h>
+#include <fcntl.h>
 
 
 uint64_t _ftell64 (FILE* stream)
@@ -23,7 +24,7 @@ long ftell (FILE* stream)
   
   off = ftell64 (stream);
   if ( off > LONG_MAX ) {
-      errno = ERANGE;
+      __seterrno(ERANGE);
       return EOF;
   }
 

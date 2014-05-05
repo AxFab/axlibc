@@ -1,5 +1,6 @@
 #include <alloc.h>
 #include <stdint.h>
+#include <error.h>
 
 int bpw2 (unsigned long );
 
@@ -188,7 +189,7 @@ void* malloc_r(xHeapArea_t* heap, size_t size)
     }
     
     _UNLOCK(heap);
-    // TODO errno = ENOMEM;
+    __seterrno (ENOMEM);
 
     if (heap->flags & ALLOC_PARANOID) {
         if (memcorrupt_r(heap)) {

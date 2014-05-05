@@ -42,29 +42,29 @@ __AXLIBC_BEG
 // ===========================================================================
 struct tm
 {
-  int    tm_sec   /**< seconds [0,61] */
-  int    tm_min   /**< minutes [0,59] */
-  int    tm_hour  /**< hour [0,23] */
-  int    tm_mday  /**< day of month [1,31] */
-  int    tm_mon   /**< month of year [0,11] */
-  int    tm_year  /**< years since 1900 */
-  int    tm_wday  /**< day of week [0,6] (Sunday = 0) */
-  int    tm_yday  /**< day of year [0,365] */
-  int    tm_isdst /**< daylight savings flag */
+  int    tm_sec;   /**< seconds [0,61] */
+  int    tm_min;   /**< minutes [0,59] */
+  int    tm_hour;  /**< hour [0,23] */
+  int    tm_mday;  /**< day of month [1,31] */
+  int    tm_mon;   /**< month of year [0,11] */
+  int    tm_year;  /**< years since 1900 */
+  int    tm_wday;  /**< day of week [0,6] (Sunday = 0) */
+  int    tm_yday;  /**< day of year [0,365] */
+  int    tm_isdst; /**< daylight savings flag */
 };
 
 struct timespec
 {
-  time_t  tv_sec    /**< Seconds. */
-  long    tv_nsec   /**< Nanoseconds. */
+  time_t  tv_sec;    /**< Seconds. */
+  long    tv_nsec;   /**< Nanoseconds. */
 };
 
 int tm_isdst;
 
 struct itimerspec
 {
-  struct timespec  it_interval  /**< Timer period. */
-  struct timespec  it_value     /**< Timer expiration. */
+  struct timespec  it_interval;  /**< Timer period. */
+  struct timespec  it_value;     /**< Timer expiration. */
 };
 
 
@@ -90,11 +90,11 @@ int        nanosleep(const struct timespec *, struct timespec *);
 size_t     strftime(char *restrict, size_t, const char *restrict, const struct tm *restrict);
 char      *strptime(const char *restrict, const char *restrict, struct tm *restrict);
 time_t     time(time_t *);
-int        timer_create(clockid_t, struct sigevent *restrict, timer_t *restrict);
-int        timer_delete(timer_t);
-int        timer_gettime(timer_t, struct itimerspec *);
-int        timer_getoverrun(timer_t);
-int        timer_settime(timer_t, int, const struct itimerspec *restrict, struct itimerspec *restrict);
+// int        timer_create(clockid_t, struct sigevent *restrict, timer_t *restrict);
+// int        timer_delete(timer_t);
+// int        timer_gettime(timer_t, struct itimerspec *);
+// int        timer_getoverrun(timer_t);
+// int        timer_settime(timer_t, int, const struct itimerspec *restrict, struct itimerspec *restrict);
 void       tzset(void);
 
 

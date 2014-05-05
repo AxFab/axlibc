@@ -134,4 +134,12 @@ __AXLIBC_BEG
 
 __AXLIBC_END
 
+
+
+// Language extention
+
+#define restrict 
+
+
+
 #endif /* FEATURES_H__ */

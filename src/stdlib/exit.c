@@ -1,9 +1,10 @@
 #include <stddef.h> // size_t
-#include <stdlib.h> // _exit
+#include <stdlib.h> // exit
 #include <signal.h> // raise, SIGABRT
-
+#include <unistd.h> // _exit
 
 #define ATEXIT_STACK_SIZE  32
+
 
 // ---------------------------------------------------------------------------
 /** stack array for at-exit functions */

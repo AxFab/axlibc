@@ -1,4 +1,6 @@
 #include <stream.h>
+#include <string.h>
+#include <fcntl.h>
 
 // ---------------------------------------------------------------------------
 int fill_cache (FILE* stream)

@@ -1,6 +1,6 @@
 #include <stream.h>
 
-int errno;
+// int errno;
 FILE* stdout;
 FILE* stdin;
 FILE* stderr;

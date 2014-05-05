@@ -41,16 +41,16 @@ typedef uintmax_t ino_t;
 =========================================================================== */
 
 /** Used for file block counts. */
-typedef long blkcnt_t
+typedef long blkcnt_t;
 
 /** Used for block sizes. */
-typedef int blksize_t
+typedef int blksize_t;
 
 /** Used for file system block counts.  */
 typedef unsigned long fsblkcnt_t;
 
 /** Used for file system file counts.  */
-typedef unsigned int fsfilcnt_t
+typedef unsigned int fsfilcnt_t;
 
 /** Used for link counts. */
 typedef long nlink_t;

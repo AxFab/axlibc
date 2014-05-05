@@ -12,6 +12,7 @@
  */
 
 #include <features.h>
+#include <time.h>
 
 __AXLIBC_BEG
 
@@ -76,18 +77,17 @@ __AXLIBC_BEG
 // ===========================================================================
 typedef int sig_atomic_t;
 typedef int sigset_t;
-typedef int pid_t;
 typedef int siginfo_t;
 
 
-typedef union sigval 
+union sigval 
 {
   int    sival_int;    /**< integer signal value */
   void*  sival_ptr;    /**< pointer signal value */
 };
 
 
-typedef struct sigevent 
+struct sigevent 
 {
   int                      sigev_notify;          /**< notification type */
   int                      sigev_signo;           /**< signal number */
@@ -98,7 +98,7 @@ typedef struct sigevent
 
 
 
-typedef struct sigaction
+struct sigaction
 {
   void     (*sa_handler)(int);  /** what to do on receipt of signal */
   sigset_t   sa_mask;           /** set of signals to be blocked during execution of the signal handling function */
@@ -174,8 +174,7 @@ int    sigrelse(int);
 void (*sigset(int, void (*)(int)))(int);
 // int    sigstack(struct sigstack *ss, struct sigstack *oss); (LEGACY)
 int    sigsuspend(const sigset_t *);
-int    sigtimedwait(const sigset_t *, siginfo_t *,
-           const struct timespec *);
+int    sigtimedwait(const sigset_t *, siginfo_t *, const struct timespec *);
 int    sigwait(const sigset_t *set, int *sig);
 int    sigwaitinfo(const sigset_t *, siginfo_t *);
 

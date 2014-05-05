@@ -6,21 +6,22 @@
 #include <errno.h>
 #include <unistd.h>
 
-#define restrict 
+#include <error.h>
 
 
-#define O_RDONLY		1
-#define O_WRONLY		2
-#define O_RDWR			4
-#define O_APPEND		8
-#define O_CREAT			16
-#define O_TRUNC			32
 
-#define O_BINARY   64
-#define O_EXCL   128
-#define O_CLOEXEC  256
-#define O_MEMORYMAP   512
-#define O_LARGEFILE   1024
+// #define O_RDONLY		1
+// #define O_WRONLY		2
+// #define O_RDWR			4
+// #define O_APPEND		8
+// #define O_CREAT			16
+// #define O_TRUNC			32
+
+// #define O_BINARY   64
+// #define O_EXCL   128
+// #define O_CLOEXEC  256
+// #define O_MEMORYMAP   512
+// #define O_LARGEFILE   1024
 
 #define OF_DEL_ON_CLOSE  0x800
 
@@ -44,10 +45,10 @@ struct axStream
 	char* _path;
 	uint8_t* _cache;
 	uint8_t _ungetbuf[UNGET_BUFSIZ];
-	int _bufsize;
-	int _bufidx;
-	int _bufend;
-	int _ungetidx;
+	size_t _bufsize;
+	size_t _bufidx;
+	size_t _bufend;
+	size_t _ungetidx;
 	void (*_close)(int);
 };
 

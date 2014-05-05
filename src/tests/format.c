@@ -27,10 +27,6 @@ int format (int (*pc)(int c, void* d), void* data, const char* str, void* args);
 
 // ===========================================================================
 
-int _errno;
-int* _geterrno() {
-  return &_errno;
-}
 
 int main () 
 {
