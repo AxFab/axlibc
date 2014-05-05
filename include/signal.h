@@ -77,31 +77,33 @@ __AXLIBC_BEG
 typedef int sig_atomic_t;
 typedef int sigset_t;
 typedef int pid_t;
+typedef int siginfo_t;
 
 
-struct sigevent 
+typedef union sigval 
 {
-  int                      sigev_notify            /**< notification type */
-  int                      sigev_signo             /**< signal number */
-  union sigval             sigev_value             /**< signal value */
-  void(*)(union sigval)    sigev_notify_function   /**< notification function */
-  (pthread_attr_t*)        sigev_notify_attributes /**< notification attributes */
+  int    sival_int;    /**< integer signal value */
+  void*  sival_ptr;    /**< pointer signal value */
 };
 
 
-union sigval 
+typedef struct sigevent 
 {
-  int    sival_int    /**< /**< integer signal value */
-  void*  sival_ptr    /**< pointer signal value */
+  int                      sigev_notify;          /**< notification type */
+  int                      sigev_signo;           /**< signal number */
+  union sigval             sigev_value;            /**< signal value */
+  void(*sigev_notify_function)(union sigval)    ;   /**< notification function */
+  // (pthread_attr_t*)        sigev_notify_attributes; /**< notification attributes */
 };
 
 
-struct sigaction
+
+typedef struct sigaction
 {
-  void     (*sa_handler)(int)  /** what to do on receipt of signal */
-  sigset_t   sa_mask           /** set of signals to be blocked during execution of the signal handling function */
-  int        sa_flags          /** special flags */
-  void (*)(int, siginfo_t *, void *) sa_sigaction /**< pointer to signal handler function or one of the macros SIG_IGN or SIG_DFL */
+  void     (*sa_handler)(int);  /** what to do on receipt of signal */
+  sigset_t   sa_mask;           /** set of signals to be blocked during execution of the signal handling function */
+  int        sa_flags;          /** special flags */
+  void (*sa_sigaction)(int, siginfo_t *, void *) ; /**< pointer to signal handler function or one of the macros SIG_IGN or SIG_DFL */
 };
 
 // ===========================================================================+
@@ -150,12 +152,12 @@ int raise( int sig );
 void (*bsd_signal(int, void (*)(int)))(int);
 int    kill(pid_t, int);
 int    killpg(pid_t, int);
-int    pthread_kill(pthread_t, int);
-int    pthread_sigmask(int, const sigset_t *, sigset_t *);
+//int    pthread_kill(pthread_t, int);
+// int    pthread_sigmask(int, const sigset_t *, sigset_t *);
 // int    raise(int);
 int    sigaction(int, const struct sigaction *, struct sigaction *);
 int    sigaddset(sigset_t *, int);
-int    sigaltstack(const stack_t *, stack_t *);
+// int    sigaltstack(const stack_t *, stack_t *);
 int    sigdelset(sigset_t *, int);
 int    sigemptyset(sigset_t *);
 int    sigfillset(sigset_t *);
@@ -170,8 +172,7 @@ int    sigprocmask(int, const sigset_t *, sigset_t *);
 int    sigqueue(pid_t, int, const union sigval);
 int    sigrelse(int);
 void (*sigset(int, void (*)(int)))(int);
-int    sigstack(struct sigstack *ss,
-           struct sigstack *oss); (LEGACY)
+// int    sigstack(struct sigstack *ss, struct sigstack *oss); (LEGACY)
 int    sigsuspend(const sigset_t *);
 int    sigtimedwait(const sigset_t *, siginfo_t *,
            const struct timespec *);
