@@ -37,6 +37,7 @@ libaxc_src = \
 		$(patsubst src/%,%,$(wildcard src/format/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/stdio/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/stdlib/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/time/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/string/*.c)) 
 libaxc_inc = include/ internal/
 libaxc_cflags =  $(std_$(mode)_cflags) -nostdinc -D__C99
@@ -50,6 +51,7 @@ libAxRaw_src = \
 		$(patsubst src/%,%,$(wildcard src/alloc/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/string/*.c)) \
 		$(patsubst src/%,%,$(wildcard src/format/*.c)) \
+		$(patsubst src/%,%,$(wildcard src/time/*.c)) \
 		tests/error.c
 libAxRaw_inc = include/ internal/
 libAxRaw_cflags =  $(std_$(mode)_cflags) -nostdinc -D__EX
