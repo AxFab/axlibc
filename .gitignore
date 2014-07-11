@@ -11,8 +11,10 @@ build/
 
 # Allow repository files
 !.gitignore
+!.travis.yml
 !LICENSE
 !README
+
 
 # Allow makefiles
 !Makefile

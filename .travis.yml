@@ -1,0 +1,11 @@
+language: c
+compiler:
+  - gcc
+  - clang
+
+env:
+  - ARCH=x64
+
+script:
+  - "bash -ex ./tools/travis-ci.sh"
+

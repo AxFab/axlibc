@@ -1,7 +1,7 @@
 # Makefile 
 
 ifeq ($(MAKE_SCRIPTS_DIR),)
-  MAKE_SCRIPTS_DIR = build
+  MAKE_SCRIPTS_DIR = tools
 endif
 
 -include $(MAKE_SCRIPTS_DIR)/settings.mk
@@ -29,6 +29,10 @@ glue_f: libaxc
 	@objdump $(lib_dir)/libaxc.so -x | grep '*UND*' | \
 	 awk '{ print $4 } ' | sort | uniq
 
+check: libaxc libAxRaw format files alloc
+	@$(bin_dir)/format
+	@$(bin_dir)/files
+	@$(bin_dir)/alloc
 
 # Target: Library  libAxStdC
 libaxc_src = \
