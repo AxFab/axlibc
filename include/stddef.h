@@ -22,16 +22,18 @@ __AXLIBC_BEG
  */
 #define offsetof(s,m)   (size_t)&(((s *)0)->m)
 
-
-#if __POINTER_BITS == __INT_BITS
-  typedef unsigned int size_t;	/**< Unsigned integral type (type ) */
-  typedef int ptrdiff_t;     /**< Result of pointer subtraction (type ) */
-#elif __POINTER_BITS == __LONG_BITS
-  typedef unsigned long size_t;  /**< Unsigned integral type (type ) */
-  typedef long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
-#else
-  typedef unsigned long long size_t;  /**< Unsigned integral type (type ) */
-  typedef long long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
+#ifndef _SIZE_DEF
+#  define _SIZE_DEF
+#  if __POINTER_BITS == __INT_BITS
+    typedef unsigned int size_t;	/**< Unsigned integral type (type ) */
+    typedef int ptrdiff_t;     /**< Result of pointer subtraction (type ) */
+#  elif __POINTER_BITS == __LONG_BITS
+    typedef unsigned long size_t;  /**< Unsigned integral type (type ) */
+    typedef long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
+#  else
+    typedef unsigned long long size_t;  /**< Unsigned integral type (type ) */
+    typedef long long ptrdiff_t;     /**< Result of pointer subtraction (type ) */
+#  endif
 #endif
 
 

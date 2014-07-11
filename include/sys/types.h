@@ -59,7 +59,10 @@ typedef long nlink_t;
 typedef long off_t;
 
 /** Used for sizes of objects. */
-typedef uintptr_t size_t;
+#ifndef _SIZE_DEF
+#  define _SIZE_DEF
+    typedef uintptr_t size_t;
+#endif
 
 /** Used for a count of bytes or an error indication. */
 typedef intptr_t ssize_t;
