@@ -1,28 +1,29 @@
 #include <stdlib.h> // abort
-#include <stream.h>
+#include <ax/file.h>
+#include <ax/mutex.h>
 
 
 // ---------------------------------------------------------------------------
-void flockfile (FILE* stream)
+void flockfile (FILE* fp)
 {
-  if(mtx_lock( &stream->_lock ) != MTX_SUCESS ) {
+  if(mtx_lock( &fp->lock_ ) != MTX_SUCESS ) {
     abort();
   }
 }
 
 // ---------------------------------------------------------------------------
-void funlockfile (FILE* stream)
+void funlockfile (FILE* fp)
 {
-  if (mtx_unlock( &stream->_lock ) != MTX_SUCESS) {
+  if (mtx_unlock( &fp->lock_ ) != MTX_SUCESS) {
     abort();
   }
 }
 
 // ---------------------------------------------------------------------------
-int ftrylockfile (FILE* stream)
+int ftrylockfile (FILE* fp)
 {
-  switch(mtx_trylock( &stream->_lock )) {
-    
+  switch(mtx_trylock( &fp->lock_ )) {
+
     case MTX_SUCESS:
       return 0;
 

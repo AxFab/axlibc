@@ -2,7 +2,7 @@
 
 #define _getLocale()  (&stdlocal)
 // ==========================================================================
-locale_t stdlocal = { 
+locale_t stdlocal = {
   {
     { 0x00, 0x00, CTYPE_CNTRL },
     { 0x01, 0x01, CTYPE_CNTRL },
@@ -193,7 +193,7 @@ int isprint (int c)
   return (_getLocale()->_ctype[c]._flags & CTYPE_GRAPH ) || ( c == ' ' );
 }
 
-/** checks for any printable character which is not a space or an alphanumeric 
+/** checks for any printable character which is not a space or an alphanumeric
  * character */
 int ispunct (int c)
 {
@@ -294,7 +294,7 @@ int isprint_l (int c, locale_t locale)
   return (locale._ctype[c]._flags & CTYPE_GRAPH ) || ( c == ' ' );
 }
 
-/** checks for any printable character which is not a space or an alphanumeric 
+/** checks for any printable character which is not a space or an alphanumeric
  * character */
 int ispunct_l (int c, locale_t locale)
 {
@@ -338,3 +338,12 @@ int toupper_l (int c, locale_t locale)
 }
 
 
+// ===========================================================================
+
+int isascii(int c)
+{
+  return !(c&~0x7f);
+}
+
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------

@@ -28,8 +28,7 @@
 
 
 
-
-int main () 
+int main ()
 {
   int err;
   size_t sz;
@@ -55,7 +54,7 @@ int main ()
   // FORMAT ------------------------------------------------------------------
   fp = fopen ("bench#2.tmp", "w");
   TEST ("File format #1", !fp, 0);
-  
+
   sz = fprintf (fp, "Characters: %c %c \n", 'a', 65);
   TEST ("File format #2", sz, 17);
 

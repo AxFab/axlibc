@@ -32,8 +32,11 @@ struct lldiv
   long long rem;
 };
 
+div_t div (int, int);
+ldiv_t ldiv (long, long);
+lldiv_t lldiv (long long, long long);
 
-
+int abs (int value);
 
 void* malloc (size_t size);
 void free (void* ptr);

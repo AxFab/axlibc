@@ -2,9 +2,9 @@
 #define STDIO_H__
 
 /** @file stdio.h
- * @brief standard buffered input/output 
+ * @brief standard buffered input/output
  * @version C89, C99, IEEE, Unix95, Unix98, POSIX, XSI
- * 
+ *
  * The <stdio.h> header defines the following
  */
 
@@ -18,7 +18,7 @@ __AXLIBC_BEG
 // Config --------------------------------------------------------------------
 #define BUFSIZ  65536 /**< Size of <stdio.h> buffers. */
 
-/** Maximum size in bytes of the longest filename string that the 
+/** Maximum size in bytes of the longest filename string that the
  * implementation guarantees can be opened. */
 #define FILENAME_MAX 260
 
@@ -35,6 +35,9 @@ __AXLIBC_BEG
 #define SEEK_SET 0 /**< Seek relative to start-of-file. */
 #define SEEK_CUR 1 /**< Seek relative to current position. */
 #define SEEK_END 2 /**< Seek relative to end-of-file. */
+#define SEEK_DATA 3
+#define SEEK_HOLE 4
+
 
 /* C89/C99 say they're macros. */
 #define stdout  stdout
@@ -52,7 +55,7 @@ typedef signed long fpos_t;
 
 // ===========================================================================
 // Typedef FILE --------------------------------------------------------------
-typedef struct axStream FILE;
+typedef struct axFile FILE;
 
 /* Standard streams.  */
 extern FILE *stdout;          /**< Standard output stream.  */
@@ -162,7 +165,7 @@ extern int optind, opterr, optopt;
 /* ======================================================================== */
 
 /* Replace by what !?
-#define getc(fp)          
+#define getc(fp)
 #define getchar()
 #define putc(c,fp)
 #define putchar(c)

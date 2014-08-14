@@ -61,7 +61,8 @@ typedef long off_t;
 /** Used for sizes of objects. */
 #ifndef _SIZE_DEF
 #  define _SIZE_DEF
-    typedef uintptr_t size_t;
+#  define SIZE_MAX UINTPTR_MAX
+  typedef uintptr_t size_t;
 #endif
 
 /** Used for a count of bytes or an error indication. */

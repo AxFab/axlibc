@@ -1,17 +1,18 @@
 #include <stdint.h>
 #include <limits.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <ctype.h>
-#include <error.h>
+#include <errno.h>
 
 #define LOWER 0x20
 
-static const char const* digits =
-  "0123456789abcdefghijklmnopqrstuvwxyz";
+const char* _utoa_digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+=";
+const char* _utoa_digitsX = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+=";
 
 
 // ---------------------------------------------------------------------------
-static uintmax_t _strtox(const char * str, char ** endptr, int base, char* sign)
+uintmax_t _strtox(const char * str, char ** endptr, int base, char* sign)
 {
   uintmax_t value = 0;
 
@@ -37,14 +38,14 @@ static uintmax_t _strtox(const char * str, char ** endptr, int base, char* sign)
     }
   }
 
-  if (*str < '0' || (*str | LOWER) >= digits[base]) {
+  if (*str < '0' || (*str | LOWER) >= _utoa_digits[base]) {
     // TODO errno !?
     return 0;
   }
 
   for (;;str++) {
 
-    if (*str < '0' || (*str | LOWER) >= digits[base])
+    if (*str < '0' || (*str | LOWER) >= _utoa_digits[base])
       break;
 
     value *= base;
@@ -98,14 +99,14 @@ long strtol (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno (EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LONG_MAX) {
-      __seterrno(EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = (char*)str;
       return 0;
     }
@@ -114,8 +115,8 @@ long strtol (const char * str, char ** endptr, int base)
 
   } else {
 
-    if (value > ((uintmax_t)-LONG_MIN)) {
-      __seterrno(EOVERFLOW);
+    if (value > (-(uintmax_t)LONG_MIN)) {
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = (char*)str;
       return 0;
     }
@@ -138,14 +139,14 @@ long long strtoll (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno(EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (sign == '+') {
     if (value > LLONG_MAX) {
-      __seterrno(EOVERFLOW);
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = (char*)str;
       return 0;
     }
@@ -154,8 +155,8 @@ long long strtoll (const char * str, char ** endptr, int base)
 
   } else {
 
-    if (value > (uintmax_t)(-LLONG_MIN)) {
-      __seterrno(EOVERFLOW);
+    if (value > (-(uintmax_t)LLONG_MIN)) {
+      errno = EOVERFLOW;
       if (endptr) (*endptr) = (char*)str;
       return 0;
     }
@@ -177,13 +178,13 @@ unsigned long strtoul (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno(EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (value > ULONG_MAX) {
-    __seterrno(EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
@@ -204,17 +205,60 @@ unsigned long long strtoull (const char * str, char ** endptr, int base)
   value = _strtox(str, endptr, base, &sign);
 
   if (sign == 'o') {
-    __seterrno(EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   if (value > ULLONG_MAX) {
-    __seterrno(EOVERFLOW);
+    errno = EOVERFLOW;
     if (endptr) (*endptr) = (char*)str;
     return 0;
   }
 
   return (unsigned long long) (sign == '+' ? value : -value);
 }
+
+// ---------------------------------------------------------------------------
+
+char* _utoa (uintmax_t value, char * str, int base, const char* digits)
+{
+  int sp = 0, j=0;
+  char stack[sizeof(uintmax_t)*8] = { 0 };
+
+  if (value == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return 0;
+  }
+
+  while (value) {
+    lldiv_t res = lldiv(value, base);
+    stack[sp++] = digits[res.rem];
+    value = res.quot;
+  }
+
+  str [sp] = '\0';
+  while (sp > 0) {
+    --sp;
+    str [j++] = stack[sp];
+  }
+
+  return str;
+}
+
+
+char* itoa (int value, char * str, int base)
+{
+  char* ptr = str;
+  if (base == 10 && value < 0) {
+    *(str++) = '-';
+    value = -value;
+  }
+
+  _utoa (value, str, base, _utoa_digits);
+  return ptr;
+}
+
+
 

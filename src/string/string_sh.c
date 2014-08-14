@@ -1,19 +1,36 @@
 #include <string.h>
 
+// ---------------------------------------------------------------------------
 // Search a string for a character
 char* strchr (const char* string, int ch)
 {
-    while (*string) {
-        if (*string == (char) ch) {
-            return (char*) string;
-        }
-
-        string++;
+  while (*string) {
+    if (*string == (char) ch) {
+      return (char*) string;
     }
 
-    return NULL;
+    string++;
+  }
+
+  return NULL;
 }
 
+// ---------------------------------------------------------------------------
+// Search a string for a character
+char* strrchr (const char* string, int ch)
+{
+  int lg = strlen (string) -1;
+  for (; lg >= 0; --lg) {
+    if (string[lg] == (char) ch) {
+      return (char*) string;
+    }
+  }
+
+  return NULL;
+}
+
+
+// ---------------------------------------------------------------------------
 // Split string into tokens - reentrent (TODO suppress goto and that is not the best way)
 char* strtok_r ( register char* s, register const char* delim, char** lasts )
 {

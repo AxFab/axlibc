@@ -1,30 +1,30 @@
-#include <stream.h>
+#include <ax/file.h>
 
 // ---------------------------------------------------------------------------
 void clearerr (FILE* stream)
 {
   flockfile (stream);
-  stream->_oflags &= ~(OF_ERR | OF_EOF);
+  stream->oflags_ &= ~(OF_ERR | OF_EOF);
   funlockfile (stream);
 }
 
 // ---------------------------------------------------------------------------
 int feof (FILE* stream)
 {
-  return stream->_oflags & OF_EOF;
+  return stream->oflags_ & OF_EOF;
 }
 
 
 // ---------------------------------------------------------------------------
 int ferror (FILE* stream)
 {
-  return stream->_oflags & OF_ERR;
+  return stream->oflags_ & OF_ERR;
 }
 
 
 // ---------------------------------------------------------------------------
 int fileno (FILE* stream)
 {
-  return stream->_fd;
+  return stream->fd_;
 }
 

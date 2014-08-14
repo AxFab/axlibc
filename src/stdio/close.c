@@ -1,57 +1,52 @@
 #include <stdlib.h>
-#include <stream.h>
+#include <ax/file.h>
 #include <fcntl.h>
+#include <errno.h>
 
 // ---------------------------------------------------------------------------
 
-int fclose (FILE* stream)
+int fclose (FILE* fp)
 {
-  FILE* fp = OFP_HEAD;
+  FILE* hp = OFP_HEAD;
   FILE* pp = NULL;
 
   /* Checking that we know this file */
-  while (stream == fp) {
+  while (fp == hp) {
     if (fp == NULL) {
-      __seterrno(EINVAL);
+      errno = EINVAL;
       return EOF;
     }
 
     pp = fp;
-    fp = fp->_next;
+    fp = fp->next_;
   }
 
-  flockfile (stream);
+  flockfile (fp);
 
   /* flush buffers */
-  if (stream->_oflags &= (O_WRONLY | O_RDWR)) {
-    if (flush_cache (stream) == EOF) {
+  if (fp->oflags_ &= (O_WRONLY | O_RDWR)) {
+    if (flush_cache (fp) == EOF) {
       return EOF;
     }
   }
 
   /* Close file descriptor */
-  close (stream->_fd);
+  close (fp->fd_);
 
   /* Remove from list */
   if (pp != NULL) {
-    pp->_next = stream->_next;
+    pp->next_ = fp->next_;
   } else {
-    OFP_HEAD = stream->_next;
+    OFP_HEAD = fp->next_;
   }
 
   /* Release mutex*/
-  mtx_destroy( &stream->_lock );
+  mtx_destroy( &fp->lock_ );
 
-  /* Delete tmpfile() */
-  if ( stream->_oflags & OF_DEL_ON_CLOSE )
-  {
-    remove (stream->_path);
-  }
-
-  /* Free stream */
-  free(stream);
+  /* Free fp */
+  free(fp);
 
   return 0;
-  
+
 }
 

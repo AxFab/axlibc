@@ -1,79 +1,81 @@
-#include <stream.h>
+#include <ax/file.h>
 #include <string.h>
 #include <fcntl.h>
 
 // ---------------------------------------------------------------------------
-int fill_cache (FILE* stream)
+int fill_cache (FILE* fp)
 {
-  size_t bread = read( stream->_fd, stream->_cache, stream->_bufsize);
+  size_t bread = read( fp->fd_, fp->buf_, fp->bsize_);
 
-  if (bread != stream->_bufsize) {
+  if (bread != fp->bsize_) {
       if (bread == 0) {
-        stream->_oflags |= OF_EOF;
+        fp->oflags_ |= OF_EOF;
         return EOF;
       }
 
-      stream->_position += bread;
-      stream->_bufend = bread;
-      stream->_bufidx = 0;
+      fp->off_ += bread;
+      // FIXME
       return 0;
-      
+
   } else {
-      stream->_oflags |= OF_ERR;
+      fp->oflags_ |= OF_ERR;
       return EOF;
   }
 }
 
 
 // ---------------------------------------------------------------------------
-int flush_cache (FILE* stream)
+int flush_cache (FILE* fp)
 {
-  size_t written = 0;
+  // size_t written = 0;
 
-  while (written != stream->_bufidx) {
-    size_t wrest = stream->_bufidx - written;
-    size_t rest = write( stream->_fd, stream->_cache+ written, wrest);
+  // while (written != fp->_bufidx) {
+  //   size_t wrest = fp->_bufidx - written;
+  //   size_t rest = write( fp->fd_, fp->buf_+ written, wrest);
 
-    written += rest;
-    stream->_position += rest;
+  //   written += rest;
+  //   fp->_position += rest;
 
-    if (rest != wrest) {
-      stream->_oflags |= OF_ERR;
-      stream->_bufidx -= written;
-      memmove(stream->_cache, stream->_cache + written, stream->_bufidx);
-      return EOF;
-    }
-  }
+  //   if (rest != wrest) {
+  //     fp->oflags_ |= OF_ERR;
+  //     fp->_bufidx -= written;
+  //     memmove(fp->buf_, fp->buf_ + written, fp->_bufidx);
+  //     return EOF;
+  //   }
+  // }
 
-  stream->_bufidx = 0;
+  // fp->_bufidx = 0;
   return 0;
 }
 
 // ---------------------------------------------------------------------------
-int fflush (FILE* stream)
+int fflush (FILE* fp)
 {
   int res = 0;
 
-  if (stream != NULL) {
-    flockfile (stream);
-    res = flush_cache (stream);
-    funlockfile (stream);
+  if (fp != NULL) {
+    flockfile (fp);
+    res = flush_cache (fp);
+    funlockfile (fp);
     return res;
   }
 
-  stream = OFP_HEAD;
-  while (stream != NULL) {
-    if (stream->_oflags &= (O_WRONLY | O_RDWR)) {
-      flockfile (stream);
-      res |= flush_cache (stream);
-      funlockfile (stream);
+  fp = OFP_HEAD;
+  while (fp != NULL) {
+    if (fp->oflags_ &= (O_WRONLY | O_RDWR)) {
+      flockfile (fp);
+      res |= flush_cache (fp);
+      funlockfile (fp);
     }
 
-    stream = stream->_next;
+    fp = fp->next_;
   }
 
   return res;
 }
 
 
+void setbuf(FILE *stream, char *buf)
+{
 
+}

@@ -20,7 +20,7 @@ void* memset (void* ptr, int val, size_t length);
 
 #if defined(__BSD)
 void* memccpy (void* restrict dest, const void* restrict src, int c, size_t length);
-#endif 
+#endif
 
 #if defined(__GNU)
 void* rawmemchr (const void* ptr, int chr);
@@ -73,7 +73,7 @@ char* strchrnul (const char* string, int ch);
 char* strcasestr  (const char* haystack, const char* needle);
 #endif
 
-#ifdef	__USE_XOPEN2K8
+#if defined(__U95) || defined(__EX)
 size_t strnlen (const char* string, size_t maxlen);
 #endif
 

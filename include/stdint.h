@@ -6,7 +6,7 @@
 __AXLIBC_BEG
 
 #if !(defined(__C99) || defined(__EX))
-#  error stdint is not available, use ISO C99 Standard. 
+#  error stdint is not available, use ISO C99 Standard.
 #endif
 
 /* ----------------------------------------------------------------------- */
@@ -140,8 +140,6 @@ typedef uint64_t uintmax_t;
 
 #define SIG_ATOMIC_MAX INT8_MAX
 #define SIG_ATOMIC_MIN INT8_MIN
-
-#define SIZE_MAX ((uint32_t)INT32_MAX)
 
 
 #define INT8_C(value) ((int8_t) value)
