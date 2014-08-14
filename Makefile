@@ -52,7 +52,7 @@ libaxc_src = \
 		$(patsubst src/%,%,$(wildcard src/string/*.c))
 libaxc_inc = include/ internal/
 libaxc_cflags = $(std_$(mode)_cflags) -nostdinc -D__C99
-libaxc_lflags = -nostdlib
+libaxc_lflags = -nostdlib -fPIC
 $(eval $(call LIBRARY,libaxc))
 
 

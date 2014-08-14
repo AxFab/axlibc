@@ -67,8 +67,8 @@ struct axFile
 
 int _dwrite (FILE *restrict fp, const char* restrict buf, size_t length);
 int _fwrite (FILE *restrict fp, const char* restrict buf, size_t length);
-int _dread (FILE *restrict fp, const char* restrict buf, size_t length);
-int _fread (FILE *restrict fp, const char* restrict buf, size_t length);
+int _dread (FILE *restrict fp, char* restrict buf, size_t length);
+int _fread (FILE *restrict fp, char* restrict buf, size_t length);
 
 void flockfile (FILE* restrict stream);
 void funlockfile (FILE* restrict stream);

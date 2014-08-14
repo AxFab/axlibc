@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------
 /** Write using a file descriptor */
-int _dread (FILE *restrict fp, const char* restrict buf, size_t length)
+int _dread (FILE *restrict fp, char* restrict buf, size_t length)
 {
   fp->count_ += length;
   return read (fp->fd_, buf, length);
