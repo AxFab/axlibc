@@ -47,6 +47,7 @@ static inline int _vsnprintf(char *restrict str, size_t lg, const char *restrict
 
 
 // ===========================================================================
+#ifdef _C89
 /** Write formated string on standard output */
 int printf(const char *restrict format, ...)
 {
@@ -111,7 +112,7 @@ int vdprintf(int fd, const char *restrict format, va_list ap)
   };
   return vfprintf(&fp, format, ap);
 }
-
+#endif
 
 // ===========================================================================
 /** Write formated string from a string */
