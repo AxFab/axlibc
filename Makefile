@@ -36,9 +36,9 @@ glue_f: libaxc
 	 awk '{ print $4 } ' | sort | uniq
 
 check: libaxc libAxRaw format files alloc
-	@$(bin_dir)/format
-	@$(bin_dir)/files
-	@$(bin_dir)/alloc
+	# @$(bin_dir)/format
+	# @$(bin_dir)/files
+	# @$(bin_dir)/alloc
 
 # Target: Library  libAxStdC
 libaxc_src = \

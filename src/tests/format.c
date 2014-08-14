@@ -31,8 +31,6 @@ int _errno = 0;
 
 int main ()
 {
-  stdio_init();
-
   char str[STR_LENGTH];
 
   TEST ("#1", 54, strtol("54", NULL, 0));
