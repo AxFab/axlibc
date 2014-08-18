@@ -1,7 +1,8 @@
 #include <ax/file.h>
+#include <ax/slib.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
-#include <format.h>
 
 
 #define ALT_FORM   (1<<('#'-' '))

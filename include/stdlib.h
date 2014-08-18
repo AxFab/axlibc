@@ -38,6 +38,21 @@ lldiv_t lldiv (long long, long long);
 
 int abs (int value);
 
+
+
+int atoi (const char* str);
+long atol (const char* str);
+long long atoll (const char* str);
+
+long strtol (const char * str, char ** endptr, int base);
+long long strtoll (const char * str, char ** endptr, int base);
+unsigned long strtoul (const char * str, char ** endptr, int base);
+unsigned long long strtoull (const char * str, char ** endptr, int base);
+
+char* itoa (int value, char* str, int base);
+
+
+
 void* malloc (size_t size);
 void free (void* ptr);
 
